@@ -1,5 +1,6 @@
 import type { ProjectState } from "@/store/use-project-store";
-import { PALETTES } from "@/store/use-project-store";
+import { GRID_PRESETS, PALETTES } from "@/store/use-project-store";
+import { applyGridRemix } from "@/lib/grid-remix";
 
 export type CompareMode = "both" | "color" | "layout";
 
@@ -23,7 +24,7 @@ export function buildThreeVariants(
   pageIndex: number,
   ctx: Pick<
     ProjectState,
-    "styleKeyword" | "paletteId" | "fontStyleId" | "narrativeId"
+    "styleKeyword" | "paletteId" | "fontStyleId" | "narrativeId" | "gridPresetId"
   >,
   options?: BuildVariantsOptions,
 ): [string, string, string] {
@@ -39,8 +40,22 @@ export function buildThreeVariants(
     options?.isPdfRaster === true ||
     isLikelyRasterOnlyPageSvg(pageSvg);
 
-  return [0, 1, 2].map((i) =>
-    wrapVariant(pageSvg, {
+  const gridPreset =
+    GRID_PRESETS.find((g) => g.id === ctx.gridPresetId) ?? GRID_PRESETS[0];
+  const gridOn =
+    gridPreset.cols > 0 &&
+    gridPreset.rows > 0;
+
+  return [0, 1, 2].map((i) => {
+    const remixed = gridOn
+      ? applyGridRemix(pageSvg, {
+          cols: gridPreset.cols,
+          rows: gridPreset.rows,
+          pageIndex,
+          variantIndex: i,
+        })
+      : pageSvg;
+    return wrapVariant(remixed, {
       pageIndex,
       index: i as 0 | 1 | 2,
       accent: palette.accent,
@@ -50,8 +65,8 @@ export function buildThreeVariants(
       narrative: ctx.narrativeId,
       fontHint: ctx.fontStyleId,
       isPdfRaster,
-    }),
-  ) as [string, string, string];
+    });
+  }) as [string, string, string];
 }
 
 /** 未傳 isPdf 時，依內容推斷（單張 data:image 內嵌） */

@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev -H 127.0.0.1 -p 3000",
+    "dev:3010": "next dev -H 127.0.0.1 -p 3010",
+    "dev:turbo": "next dev --turbopack -H 127.0.0.1 -p 3000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -H 127.0.0.1 -p 3000",
+    "start:3010": "next start -H 127.0.0.1 -p 3010",
+    "free:3000": "bash scripts/free-port-3000.sh",
     "lint": "next lint"
   },
   "dependencies": {

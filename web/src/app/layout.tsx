@@ -1,18 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
+/** 不使用 next/font/google，避免建置/SSR 時連線 Google 失敗導致 500（部分網路環境） */
 export const metadata: Metadata = {
   title: "Portfolio ReStyle AI",
   description:
@@ -26,9 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-Hant">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen font-sans`}
-      >
+      <body className="min-h-screen font-sans">
         {children}
       </body>
     </html>

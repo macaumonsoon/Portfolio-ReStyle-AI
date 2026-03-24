@@ -21,23 +21,31 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SvgInlinePreview } from "@/components/svg-inline-preview";
 import { DemoTextPositionPanel } from "@/components/demo-text-position-panel";
+import { PdfTextEditorPanel } from "@/components/pdf-text-editor-panel";
+import { SvgTextEditorPanel } from "@/components/svg-text-editor-panel";
 import { UploadPdfDialog } from "@/components/upload-pdf-dialog";
 import { WebglPreviewPanel } from "@/components/webgl/webgl-preview-panel";
+import { LivePreviewTestDock } from "@/components/live-preview-test-dock";
 import { buildThreeVariants, type CompareMode } from "@/lib/svg-variants";
+import { computeOrderedSourceIndices } from "@/lib/page-order";
 import { downloadTextFile } from "@/lib/download";
+import { useResolvedSourcePageIndex } from "@/hooks/use-resolved-source-page-index";
 import {
   DEMO_FILE_NAME,
   DEMO_TEXT_DEFAULT,
   buildDemoSvg,
   type DemoTextLayout,
 } from "@/lib/demo-svg";
+import type { PdfPageLayer } from "@/lib/pdf-page-types";
 import {
   CANVAS_PRESETS,
   FONT_STYLES,
+  GRID_PRESETS,
   NARRATIVES,
   PALETTES,
   STYLE_KEYWORDS,
@@ -55,8 +63,10 @@ export function Wizard() {
   const step = useProjectStore((s) => s.step);
   const setStep = useProjectStore((s) => s.setStep);
   const setFile = useProjectStore((s) => s.setFile);
+  const setPdfImport = useProjectStore((s) => s.setPdfImport);
   const patchSourceSvg = useProjectStore((s) => s.patchSourceSvg);
   const setOptions = useProjectStore((s) => s.setOptions);
+  const setOrderedSourceIndices = useProjectStore((s) => s.setOrderedSourceIndices);
   const reset = useProjectStore((s) => s.reset);
 
   const fileName = useProjectStore((s) => s.fileName);
@@ -67,26 +77,36 @@ export function Wizard() {
   const canvasPresetId = useProjectStore((s) => s.canvasPresetId);
   const fontStyleId = useProjectStore((s) => s.fontStyleId);
   const narrativeId = useProjectStore((s) => s.narrativeId);
+  const userBrief = useProjectStore((s) => s.userBrief);
+  const gridPresetId = useProjectStore((s) => s.gridPresetId);
   const currentPageIndex = useProjectStore((s) => s.currentPageIndex);
   const setCurrentPageIndex = useProjectStore((s) => s.setCurrentPageIndex);
   const selectionByPage = useProjectStore((s) => s.selectionByPage);
   const selectVariant = useProjectStore((s) => s.selectVariant);
   const finalizedPageSvgs = useProjectStore((s) => s.finalizedPageSvgs);
 
+  const sourcePageIndex = useResolvedSourcePageIndex();
+
   const ctx = useMemo(
-    () => ({ styleKeyword, paletteId, fontStyleId, narrativeId }),
-    [styleKeyword, paletteId, fontStyleId, narrativeId],
+    () => ({
+      styleKeyword,
+      paletteId,
+      fontStyleId,
+      narrativeId,
+      gridPresetId,
+    }),
+    [styleKeyword, paletteId, fontStyleId, narrativeId, gridPresetId],
   );
 
-  const currentPageSvg = pageSvgs[currentPageIndex] ?? "";
+  const currentPageSvg = pageSvgs[sourcePageIndex] ?? "";
   const variants = useMemo(
     () =>
       currentPageSvg
-        ? buildThreeVariants(currentPageSvg, currentPageIndex, ctx, {
+        ? buildThreeVariants(currentPageSvg, sourcePageIndex, ctx, {
             isPdfRaster: isPdf,
           })
         : (["", "", ""] as [string, string, string]),
-    [currentPageSvg, currentPageIndex, ctx, isPdf],
+    [currentPageSvg, sourcePageIndex, ctx, isPdf],
   );
 
   const selectedForPage = selectionByPage[currentPageIndex];
@@ -118,6 +138,37 @@ export function Wizard() {
     };
   }, [compareMode, currentPageSvg, previewAfter]);
 
+  /** 右側「即時預覽測試」面板：隨步驟與選項更新 */
+  const livePreviewSvg = useMemo(() => {
+    const first = pageSvgs[0] ?? "";
+    if (!first) return "";
+    if (step === "upload") return first;
+    if (step === "options") {
+      return buildThreeVariants(first, 0, ctx, { isPdfRaster: isPdf })[0];
+    }
+    if (step === "pages") return previewAfter;
+    if (step === "export") {
+      const hit = finalizedPageSvgs.find(Boolean);
+      return hit ?? first;
+    }
+    return first;
+  }, [step, pageSvgs, ctx, isPdf, previewAfter, finalizedPageSvgs]);
+
+  const livePreviewCaption = useMemo(() => {
+    if (!pageSvgs.length) return "請先上傳 SVG 或 PDF。";
+    if (step === "upload") return "第一頁原稿（與上傳步驟內預覽一致）。";
+    if (step === "options") {
+      return "以第一頁即時套用目前選項：風格、色系、網格、字體等；調整後立即反映。";
+    }
+    if (step === "pages") {
+      return `瀏覽第 ${currentPageIndex + 1} 步 · 原稿第 ${sourcePageIndex + 1} 頁 · 顯示已選版本（未選時為版本 1）。`;
+    }
+    if (step === "export") {
+      return "已選版本匯出預覽（優先顯示第一頁成品）。";
+    }
+    return "";
+  }, [step, pageSvgs.length, currentPageIndex, sourcePageIndex]);
+
   const onSvgFile = useCallback(
     (f: File | null) => {
       if (!f) return;
@@ -137,10 +188,10 @@ export function Wizard() {
   );
 
   const onPdfImported = useCallback(
-    (name: string, pageSvgs: string[]) => {
-      setFile(name, null, true, pageSvgs);
+    (name: string, pages: PdfPageLayer[]) => {
+      setPdfImport(name, pages);
     },
-    [setFile],
+    [setPdfImport],
   );
 
   const updateDemoLayout = useCallback(
@@ -181,7 +232,8 @@ export function Wizard() {
   };
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-4 py-12 md:px-8">
+    <div className="mx-auto flex min-h-screen w-full max-w-[min(90rem,100%)] flex-col gap-10 px-4 py-12 lg:flex-row lg:items-start lg:gap-8 md:px-8">
+      <div className="flex min-w-0 flex-1 flex-col gap-10 pb-24 lg:pb-0">
       <header className="flex flex-col gap-4 border-b border-border pb-10 md:flex-row md:items-end md:justify-between">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
@@ -191,9 +243,8 @@ export function Wizard() {
             </h1>
           </div>
           <p className="max-w-xl text-sm text-muted-foreground md:text-base">
-            上傳 SVG 或 PDF → 選擇風格與畫布 → 每頁三選一再繼續 → Before/After
-            對比 → 匯出 SVG。PDF 會在瀏覽器內轉成逐頁預覽（點陣內嵌），AI
-            重排可接後端替換。
+            呼應作品集敘事與網格化重組：上傳 SVG 或 PDF，描述你的生成想法並選擇畫布、色系、字體與敘事邏輯；可選網格分區打亂重排。每頁即時預覽三個版面版本，逐頁選定後再進下一頁。PDF
+            在瀏覽器內轉為逐頁預覽（點陣內嵌），正式 AI 佈局可接後端 API。
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -368,7 +419,44 @@ export function Wizard() {
               </div>
             </FieldGroup>
 
-            <FieldGroup label="字體風格 · 生成理念">
+            <FieldGroup label="創作簡述（給 AI / 頁序參考）">
+              <Textarea
+                placeholder="例：希望突出品牌與 UI 案例，語氣專業、留白多；或：學術向，先研究方法再展示專題……"
+                value={userBrief}
+                onChange={(e) => setOptions({ userBrief: e.target.value })}
+                className="min-h-[120px] resize-y"
+              />
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                示範版會依關鍵詞微調「工作邏輯」下的頁序；完整語意排序可接大模型 API。
+              </p>
+            </FieldGroup>
+
+            <FieldGroup label="網格分區重排">
+              <div className="flex flex-col gap-2">
+                {GRID_PRESETS.map((g) => (
+                  <Button
+                    key={g.id}
+                    type="button"
+                    variant={gridPresetId === g.id ? "default" : "secondary"}
+                    className="h-auto justify-start py-2 text-left"
+                    onClick={() => setOptions({ gridPresetId: g.id })}
+                  >
+                    <span className="block font-medium">{g.label}</span>
+                    {g.cols > 0 ? (
+                      <span className="block text-xs font-normal opacity-80">
+                        三版本：順序不變 / 區塊反向 / 偽隨機重排（每頁種子不同）
+                      </span>
+                    ) : (
+                      <span className="block text-xs font-normal opacity-80">
+                        僅版面微移與濾鏡示範
+                      </span>
+                    )}
+                  </Button>
+                ))}
+              </div>
+            </FieldGroup>
+
+            <FieldGroup label="字體風格 · 敘事邏輯">
               <div className="space-y-3">
                 <div className="flex flex-col gap-2">
                   {FONT_STYLES.map((f) => (
@@ -402,6 +490,9 @@ export function Wizard() {
                     </Button>
                   ))}
                 </div>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  點「開始生成頁面」時，會依敘事與簡述計算瀏覽順序（示範演算法）；匯出順序與精靈步驟一致。
+                </p>
               </div>
             </FieldGroup>
           </div>
@@ -414,6 +505,13 @@ export function Wizard() {
               type="button"
               disabled={!canLeaveUpload}
               onClick={() => {
+                setOrderedSourceIndices(
+                  computeOrderedSourceIndices(
+                    narrativeId,
+                    pageSvgs.length,
+                    userBrief.trim(),
+                  ),
+                );
                 setCurrentPageIndex(0);
                 setStep("pages");
               }}
@@ -430,18 +528,31 @@ export function Wizard() {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-sm text-muted-foreground">
-                第 {currentPageIndex + 1} / {totalPages} 頁 · 請選擇一個版本後繼續
+                瀏覽順序第 {currentPageIndex + 1} / {totalPages} 步
+                {totalPages > 0 ? (
+                  <span className="text-muted-foreground/90">
+                    {" "}
+                    · 對應原稿第 {sourcePageIndex + 1} 頁
+                  </span>
+                ) : null}
+                {" · "}
+                請選擇一個版本後繼續
               </p>
               <p className="text-xs text-muted-foreground">
-                {isPdf
-                  ? "PDF 頁面：三版本使用強烈雙色調 / 色相重塑（依你選的色系）；向量 SVG 仍為輕微調色。"
-                  : "示範：三版本為不同版式縮放 + 色相微調；正式版由 AI 產出。"}
+                {gridPresetId !== "off"
+                  ? "已開啟網格重排：三版本為同一網格下不同的區塊置換順序，並疊加濾鏡與位移。"
+                  : isPdf
+                    ? "PDF 頁面：三版本使用強烈雙色調 / 色相重塑（依你選的色系）；向量 SVG 仍為輕微調色。"
+                    : "示範：三版本為不同版式縮放 + 色相微調；正式版由 AI 產出。"}
               </p>
             </div>
             <Badge variant="outline">
               {CANVAS_PRESETS.find((c) => c.id === canvasPresetId)?.label}
             </Badge>
           </div>
+
+          {isPdf && <PdfTextEditorPanel />}
+          {!isPdf && <SvgTextEditorPanel />}
 
           <div className="grid gap-4 lg:grid-cols-3">
             {variants.map((svg, i) => (
@@ -456,9 +567,21 @@ export function Wizard() {
                     版本 {i + 1}
                   </CardTitle>
                   <CardDescription>
-                    {i === 0 && "結構穩定"}
-                    {i === 1 && "略低重心"}
-                    {i === 2 && "偏上構圖"}
+                    {gridPresetId !== "off"
+                      ? (
+                          [
+                            "網格：區塊順序與閱讀向一致",
+                            "網格：區塊整體反向",
+                            "網格：區塊偽隨機重排",
+                          ] as const
+                        )[i]
+                      : (
+                          [
+                            "結構穩定",
+                            "略低重心",
+                            "偏上構圖",
+                          ] as const
+                        )[i]}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -660,6 +783,12 @@ export function Wizard() {
           </div>
         </section>
       )}
+      </div>
+      <LivePreviewTestDock
+        svg={livePreviewSvg}
+        caption={livePreviewCaption}
+        windowTitle="Portfolio ReStyle · 即時預覽"
+      />
     </div>
   );
 }

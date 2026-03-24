@@ -11,11 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { pdfFileToPageSvgStrings } from "@/lib/pdf-to-page-svgs";
+import type { PdfPageLayer } from "@/lib/pdf-page-types";
+import { pdfFileToLayeredPages } from "@/lib/pdf-to-layered-pages";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  onImported: (fileName: string, pageSvgs: string[]) => void;
+  onImported: (fileName: string, pages: PdfPageLayer[]) => void;
   disabled?: boolean;
 };
 
@@ -31,7 +32,7 @@ export function UploadPdfDialog({ onImported, disabled }: Props) {
       setError(null);
       setBusy(true);
       try {
-        const pages = await pdfFileToPageSvgStrings(file);
+        const pages = await pdfFileToLayeredPages(file);
         if (!pages.length) {
           setError("未能從 PDF 解析出任何頁面。");
           return;
@@ -74,8 +75,8 @@ export function UploadPdfDialog({ onImported, disabled }: Props) {
         <DialogHeader>
           <DialogTitle>上傳 PDF 作品集</DialogTitle>
           <DialogDescription>
-            將在瀏覽器內以 pdf.js 逐頁渲染，並轉成可預覽的 SVG（每頁內嵌點陣圖）。最多處理前 48
-            頁；正式向量化可再接後端。
+            將在瀏覽器內以 pdf.js 逐頁渲染，並抽出文字座標；在「頁面」步驟可修改文字內容與字體類型（覆蓋在底圖上）。最多
+            48 頁。
           </DialogDescription>
         </DialogHeader>
 

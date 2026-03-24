@@ -1,4 +1,11 @@
 import { create } from "zustand";
+import type { PdfPageLayer, PdfTextFontKey } from "@/lib/pdf-page-types";
+import { rebuildAllPdfSvgs } from "@/lib/pdf-composite-svg";
+import {
+  parseSvgPageLayer,
+  rebuildAllSvgPages,
+  type SvgPageLayer,
+} from "@/lib/svg-text-layer";
 
 export type WizardStep = "upload" | "options" | "pages" | "export";
 
@@ -41,32 +48,74 @@ export const NARRATIVES = [
   { id: "project", label: "按项目类型", desc: "品牌 / 数字 / 印刷分组" },
 ] as const;
 
+/** 網格分區重排：關閉時僅保留位移 / 濾鏡示範 */
+export const GRID_PRESETS = [
+  { id: "off", label: "關閉（僅版式微調 + 濾鏡）", cols: 0, rows: 0 },
+  { id: "2x2", label: "2×2 網格重排", cols: 2, rows: 2 },
+  { id: "3x2", label: "3×2 網格重排", cols: 3, rows: 2 },
+  { id: "3x3", label: "3×3 網格重排", cols: 3, rows: 3 },
+] as const;
+
 export type ProjectState = {
   step: WizardStep;
   fileName: string | null;
   /** 原始檔案內容（SVG 字串）；PDF 僅記錄檔名供 UI 提示 */
   originalSvg: string | null;
   isPdf: boolean;
+  /** PDF 分層資料（可編輯文字）；非 PDF 時為 null */
+  pdfPagesData: PdfPageLayer[] | null;
+  /** 向量 SVG 各頁 <text> 解析結果；無可編輯文字或 PDF 時為 null */
+  svgPageLayers: SvgPageLayer[] | null;
   pageSvgs: string[];
   styleKeyword: (typeof STYLE_KEYWORDS)[number];
   paletteId: (typeof PALETTES)[number]["id"];
   canvasPresetId: (typeof CANVAS_PRESETS)[number]["id"];
   fontStyleId: (typeof FONT_STYLES)[number]["id"];
   narrativeId: (typeof NARRATIVES)[number]["id"];
+  /** 生成想法 / 給 AI 的簡述（示範：影響頁序關鍵詞與後端提示） */
+  userBrief: string;
+  gridPresetId: (typeof GRID_PRESETS)[number]["id"];
+  /** 瀏覽第 i 步對應的原始頁索引；空陣列表示尚未套用敘事排序 */
+  orderedSourceIndices: number[];
   currentPageIndex: number;
   /** 每頁選中的版本 0–2，未選為 null */
   selectionByPage: Record<number, number | null>;
   /** 選定後寫入的 SVG（示範用 mock） */
   finalizedPageSvgs: string[];
   setStep: (s: WizardStep) => void;
-  /** PDF 時傳入 pdfPageSvgs，由 pdf.js 轉好的每頁 SVG（內嵌點陣） */
+  /** 向量檔；PDF 請用 setPdfImport */
   setFile: (
     name: string,
     content: string | null,
     isPdf: boolean,
     pdfPageSvgs?: string[],
   ) => void;
-  setOptions: (o: Partial<Pick<ProjectState, "styleKeyword" | "paletteId" | "canvasPresetId" | "fontStyleId" | "narrativeId">>) => void;
+  setPdfImport: (fileName: string, pages: PdfPageLayer[]) => void;
+  updatePdfTextItem: (
+    pageIndex: number,
+    textId: string,
+    patch: Partial<{ content: string; fontKey: PdfTextFontKey }>,
+  ) => void;
+  updateSvgTextItem: (
+    pageIndex: number,
+    textId: string,
+    patch: Partial<{ content: string; fontKey: PdfTextFontKey }>,
+  ) => void;
+  setOptions: (
+    o: Partial<
+      Pick<
+        ProjectState,
+        | "styleKeyword"
+        | "paletteId"
+        | "canvasPresetId"
+        | "fontStyleId"
+        | "narrativeId"
+        | "userBrief"
+        | "gridPresetId"
+      >
+    >,
+  ) => void;
+  setOrderedSourceIndices: (indices: number[]) => void;
   setPageSvgs: (pages: string[]) => void;
   /** 更新向量 SVG 全文與分頁，不清空已選版本（示範頁拖動文字用） */
   patchSourceSvg: (raw: string) => void;
@@ -80,12 +129,17 @@ const initial = {
   fileName: null as string | null,
   originalSvg: null as string | null,
   isPdf: false,
+  pdfPagesData: null as PdfPageLayer[] | null,
+  svgPageLayers: null as SvgPageLayer[] | null,
   pageSvgs: [] as string[],
   styleKeyword: "Minimal" as const,
   paletteId: "mono" as const,
   canvasPresetId: "a4" as const,
   fontStyleId: "neo" as const,
   narrativeId: "logic" as const,
+  userBrief: "",
+  gridPresetId: "off" as const,
+  orderedSourceIndices: [] as number[],
   currentPageIndex: 0,
   selectionByPage: {} as Record<number, number | null>,
   finalizedPageSvgs: [] as string[],
@@ -95,29 +149,133 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   ...initial,
   setStep: (step) => set({ step }),
   setFile: (fileName, content, isPdf, pdfPageSvgs) => {
-    const pageSvgs =
-      pdfPageSvgs && pdfPageSvgs.length > 0
-        ? pdfPageSvgs
-        : content && !isPdf
-          ? splitSvgPages(content)
-          : [];
+    if (pdfPageSvgs && pdfPageSvgs.length > 0) {
+      set({
+        fileName,
+        originalSvg: content,
+        isPdf: true,
+        pdfPagesData: null,
+        svgPageLayers: null,
+        pageSvgs: pdfPageSvgs,
+        selectionByPage: {},
+        finalizedPageSvgs: [],
+        currentPageIndex: 0,
+        orderedSourceIndices: [],
+      });
+      return;
+    }
+    if (content && !isPdf) {
+      const splits = splitSvgPages(content);
+      const layers = splits.map((p) => parseSvgPageLayer(p));
+      const svgPageLayers = layers.some((l) => l.texts.length > 0)
+        ? layers
+        : null;
+      set({
+        fileName,
+        originalSvg: content,
+        isPdf: false,
+        pdfPagesData: null,
+        svgPageLayers,
+        pageSvgs: rebuildAllSvgPages(layers),
+        selectionByPage: {},
+        finalizedPageSvgs: [],
+        currentPageIndex: 0,
+        orderedSourceIndices: [],
+      });
+      return;
+    }
     set({
       fileName,
       originalSvg: content,
       isPdf,
-      pageSvgs,
+      pdfPagesData: null,
+      svgPageLayers: null,
+      pageSvgs: [],
       selectionByPage: {},
       finalizedPageSvgs: [],
       currentPageIndex: 0,
+      orderedSourceIndices: [],
+    });
+  },
+  setPdfImport: (fileName, pages) => {
+    set({
+      fileName,
+      originalSvg: null,
+      isPdf: true,
+      pdfPagesData: pages,
+      svgPageLayers: null,
+      pageSvgs: rebuildAllPdfSvgs(pages),
+      selectionByPage: {},
+      finalizedPageSvgs: [],
+      currentPageIndex: 0,
+      orderedSourceIndices: [],
+    });
+  },
+  updatePdfTextItem: (pageIndex, textId, patch) => {
+    const pages = get().pdfPagesData;
+    if (!pages || !pages[pageIndex]) return;
+    const next = pages.map((p, i) => {
+      if (i !== pageIndex) return p;
+      return {
+        ...p,
+        texts: p.texts.map((t) =>
+          t.id === textId ? { ...t, ...patch } : t,
+        ),
+      };
+    });
+    const finalized = Array.from(
+      { length: next.length },
+      (_, i) => get().finalizedPageSvgs[i] ?? "",
+    );
+    finalized[pageIndex] = "";
+    set({
+      pdfPagesData: next,
+      pageSvgs: rebuildAllPdfSvgs(next),
+      selectionByPage: { ...get().selectionByPage, [pageIndex]: null },
+      finalizedPageSvgs: finalized,
+    });
+  },
+  updateSvgTextItem: (pageIndex, textId, patch) => {
+    const layers = get().svgPageLayers;
+    if (!layers || !layers[pageIndex]) return;
+    const next = layers.map((layer, i) => {
+      if (i !== pageIndex) return layer;
+      return {
+        ...layer,
+        texts: layer.texts.map((t) =>
+          t.id === textId ? { ...t, ...patch } : t,
+        ),
+      };
+    });
+    const finalized = Array.from(
+      { length: next.length },
+      (_, i) => get().finalizedPageSvgs[i] ?? "",
+    );
+    finalized[pageIndex] = "";
+    set({
+      svgPageLayers: next,
+      pageSvgs: rebuildAllSvgPages(next),
+      selectionByPage: { ...get().selectionByPage, [pageIndex]: null },
+      finalizedPageSvgs: finalized,
     });
   },
   setOptions: (o) => set(o),
+  setOrderedSourceIndices: (orderedSourceIndices) => set({ orderedSourceIndices }),
   setPageSvgs: (pageSvgs) => set({ pageSvgs }),
-  patchSourceSvg: (raw) =>
+  patchSourceSvg: (raw) => {
+    const splits = splitSvgPages(raw);
+    const layers = splits.map((p) => parseSvgPageLayer(p));
+    const svgPageLayers = layers.some((l) => l.texts.length > 0)
+      ? layers
+      : null;
     set({
       originalSvg: raw,
-      pageSvgs: splitSvgPages(raw),
-    }),
+      pageSvgs: rebuildAllSvgPages(layers),
+      pdfPagesData: null,
+      isPdf: false,
+      svgPageLayers,
+    });
+  },
   setCurrentPageIndex: (currentPageIndex) => set({ currentPageIndex }),
   selectVariant: (pageIndex, variantIndex, svg) => {
     const n = get().pageSvgs.length;
