@@ -9,15 +9,18 @@ import {
 
 export type WizardStep = "upload" | "options" | "pages" | "export";
 
-export const STYLE_KEYWORDS = [
-  "Bold",
-  "Minimal",
-  "Futuristic",
-  "Narrative",
-  "Vintage",
-  "Elegant",
-  "Playful",
+/** 風格關鍵詞：id 供 svg-variants 等邏輯使用，UI 用中英標籤 */
+export const STYLE_KEYWORD_PRESETS = [
+  { id: "Bold", labelZh: "粗獷", labelEn: "Bold" },
+  { id: "Minimal", labelZh: "極簡", labelEn: "Minimal" },
+  { id: "Futuristic", labelZh: "未來感", labelEn: "Futuristic" },
+  { id: "Narrative", labelZh: "敘事", labelEn: "Narrative" },
+  { id: "Vintage", labelZh: "復古", labelEn: "Vintage" },
+  { id: "Elegant", labelZh: "優雅", labelEn: "Elegant" },
+  { id: "Playful", labelZh: "俏皮", labelEn: "Playful" },
 ] as const;
+
+export type StyleKeywordId = (typeof STYLE_KEYWORD_PRESETS)[number]["id"];
 
 export const CANVAS_PRESETS = [
   { id: "a4", label: "A4 (210×297mm)", width: 794, height: 1123 },
@@ -48,12 +51,47 @@ export const NARRATIVES = [
   { id: "project", label: "按项目类型", desc: "品牌 / 数字 / 印刷分组" },
 ] as const;
 
-/** 網格分區重排：關閉時僅保留位移 / 濾鏡示範 */
+/** 網格分區重排：關閉時僅保留位移 / 濾鏡示範（中英雙語供 UI） */
 export const GRID_PRESETS = [
-  { id: "off", label: "關閉（僅版式微調 + 濾鏡）", cols: 0, rows: 0 },
-  { id: "2x2", label: "2×2 網格重排", cols: 2, rows: 2 },
-  { id: "3x2", label: "3×2 網格重排", cols: 3, rows: 2 },
-  { id: "3x3", label: "3×3 網格重排", cols: 3, rows: 3 },
+  {
+    id: "off",
+    labelZh: "關閉（僅版式微調 + 濾鏡）",
+    labelEn: "Off — nudge + filters only",
+    hintZh: "僅版面微移與濾鏡示範。",
+    hintEn: "Subtle layout shifts and filter demo only.",
+    cols: 0,
+    rows: 0,
+  },
+  {
+    id: "2x2",
+    labelZh: "2×2 網格重排",
+    labelEn: "2×2 grid remix",
+    hintZh: "三版本：順序不變、區塊反向、偽隨機重排（每頁種子不同）。",
+    hintEn:
+      "Three variants: reading order, reversed tiles, seeded shuffle (unique per page).",
+    cols: 2,
+    rows: 2,
+  },
+  {
+    id: "3x2",
+    labelZh: "3×2 網格重排",
+    labelEn: "3×2 grid remix",
+    hintZh: "三版本：順序不變、區塊反向、偽隨機重排（每頁種子不同）。",
+    hintEn:
+      "Three variants: reading order, reversed tiles, seeded shuffle (unique per page).",
+    cols: 3,
+    rows: 2,
+  },
+  {
+    id: "3x3",
+    labelZh: "3×3 網格重排",
+    labelEn: "3×3 grid remix",
+    hintZh: "三版本：順序不變、區塊反向、偽隨機重排（每頁種子不同）。",
+    hintEn:
+      "Three variants: reading order, reversed tiles, seeded shuffle (unique per page).",
+    cols: 3,
+    rows: 3,
+  },
 ] as const;
 
 export type ProjectState = {
@@ -67,7 +105,7 @@ export type ProjectState = {
   /** 向量 SVG 各頁 <text> 解析結果；無可編輯文字或 PDF 時為 null */
   svgPageLayers: SvgPageLayer[] | null;
   pageSvgs: string[];
-  styleKeyword: (typeof STYLE_KEYWORDS)[number];
+  styleKeyword: StyleKeywordId;
   paletteId: (typeof PALETTES)[number]["id"];
   canvasPresetId: (typeof CANVAS_PRESETS)[number]["id"];
   fontStyleId: (typeof FONT_STYLES)[number]["id"];

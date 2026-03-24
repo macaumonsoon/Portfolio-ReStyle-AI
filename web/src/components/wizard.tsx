@@ -11,6 +11,7 @@ import {
   ArrowRight,
   Check,
   Download,
+  FileDown,
   ImageIcon,
   Layers,
   Palette,
@@ -29,11 +30,12 @@ import { DemoTextPositionPanel } from "@/components/demo-text-position-panel";
 import { PdfTextEditorPanel } from "@/components/pdf-text-editor-panel";
 import { SvgTextEditorPanel } from "@/components/svg-text-editor-panel";
 import { UploadPdfDialog } from "@/components/upload-pdf-dialog";
-import { WebglPreviewPanel } from "@/components/webgl/webgl-preview-panel";
 import { LivePreviewTestDock } from "@/components/live-preview-test-dock";
+import { WebglPreviewPanel } from "@/components/webgl/webgl-preview-panel";
 import { buildThreeVariants, type CompareMode } from "@/lib/svg-variants";
 import { computeOrderedSourceIndices } from "@/lib/page-order";
-import { downloadTextFile } from "@/lib/download";
+import { downloadBlob, downloadTextFile } from "@/lib/download";
+import { buildPdfFromFinalizedSvgs } from "@/lib/svg-export-pdf";
 import { useResolvedSourcePageIndex } from "@/hooks/use-resolved-source-page-index";
 import {
   DEMO_FILE_NAME,
@@ -48,7 +50,7 @@ import {
   GRID_PRESETS,
   NARRATIVES,
   PALETTES,
-  STYLE_KEYWORDS,
+  STYLE_KEYWORD_PRESETS,
   useProjectStore,
 } from "@/store/use-project-store";
 
@@ -56,6 +58,7 @@ export function Wizard() {
   const svgInputRef = useRef<HTMLInputElement>(null);
   const [compare, setCompare] = useState(50);
   const [compareMode, setCompareMode] = useState<CompareMode>("both");
+  const [pdfExporting, setPdfExporting] = useState(false);
   const [demoLayout, setDemoLayout] = useState<DemoTextLayout>(() => ({
     ...DEMO_TEXT_DEFAULT,
   }));
@@ -231,34 +234,68 @@ export function Wizard() {
     });
   };
 
+  const exportPdf = useCallback(async () => {
+    setPdfExporting(true);
+    try {
+      const blob = await buildPdfFromFinalizedSvgs(finalizedPageSvgs);
+      if (!blob) {
+        alert("無法產生 PDF（沒有可匯出的頁面或光栅失敗）。");
+        return;
+      }
+      const base = (fileName ?? "portfolio").replace(/\.[^.]+$/, "");
+      downloadBlob(`${base}-restyled.pdf`, blob);
+    } catch (e) {
+      console.error(e);
+      alert(e instanceof Error ? e.message : "產生 PDF 時發生錯誤");
+    } finally {
+      setPdfExporting(false);
+    }
+  }, [fileName, finalizedPageSvgs]);
+
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-[min(90rem,100%)] flex-col gap-10 px-4 py-12 lg:flex-row lg:items-start lg:gap-8 md:px-8">
-      <div className="flex min-w-0 flex-1 flex-col gap-10 pb-24 lg:pb-0">
-      <header className="flex flex-col gap-4 border-b border-border pb-10 md:flex-row md:items-end md:justify-between">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Sparkles className="size-6 text-foreground" aria-hidden />
-            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-              Portfolio ReStyle AI
-            </h1>
+    <div className="mx-auto flex min-h-screen w-full max-w-[min(90rem,100%)] flex-col gap-12 px-4 py-10 sm:py-14 lg:flex-row lg:items-start lg:gap-10 lg:px-10">
+      <div className="flex min-w-0 flex-1 flex-col gap-12 pb-24 lg:pb-0">
+      <header className="relative flex flex-col gap-8 border-b border-border/60 pb-10 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-2xl space-y-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/90">
+            AI · 作品集重排
+          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <span className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/75 text-primary-foreground shadow-lift ring-4 ring-primary/10">
+              <Sparkles className="size-6" aria-hidden />
+            </span>
+            <div>
+              <h1 className="text-balance text-3xl font-semibold tracking-tight text-foreground md:text-4xl md:leading-tight">
+                Portfolio{" "}
+                <span className="bg-gradient-to-r from-primary to-violet-500 bg-clip-text text-transparent">
+                  ReStyle
+                </span>{" "}
+                AI
+              </h1>
+              <p className="mt-1 text-sm text-muted-foreground md:text-base">
+                設計師友好的版面實驗室
+              </p>
+            </div>
           </div>
-          <p className="max-w-xl text-sm text-muted-foreground md:text-base">
-            呼應作品集敘事與網格化重組：上傳 SVG 或 PDF，描述你的生成想法並選擇畫布、色系、字體與敘事邏輯；可選網格分區打亂重排。每頁即時預覽三個版面版本，逐頁選定後再進下一頁。PDF
+          <p className="max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground md:text-[15px]">
+            呼應作品集敘事與網格化重組：上傳 SVG 或 PDF，描述生成想法並選擇畫布、色系、字體與敘事邏輯；可選網格分區重排。每頁三種版本即時預覽，逐頁選定後再進下一頁。PDF
             在瀏覽器內轉為逐頁預覽（點陣內嵌），正式 AI 佈局可接後端 API。
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="secondary" type="button" onClick={() => reset()}>
-            重新開始
-          </Button>
-        </div>
+        {step !== "upload" && (
+          <div className="flex shrink-0 flex-wrap gap-3 md:justify-end">
+            <Button variant="outline" type="button" onClick={() => reset()}>
+              重新開始
+            </Button>
+          </div>
+        )}
       </header>
 
       <StepIndicator step={step} />
 
       {step === "upload" && (
-        <section className="grid gap-6 md:grid-cols-2">
-          <Card className="border-dashed">
+        <section className="grid gap-7 md:grid-cols-2">
+          <Card className="border-2 border-dashed border-primary/20 bg-gradient-to-b from-card to-muted/25 shadow-none ring-primary/5 hover:border-primary/35 hover:shadow-soft">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
                 <Upload className="size-4" />
@@ -320,7 +357,7 @@ export function Wizard() {
                   className="aspect-[4/3] max-h-[280px]"
                 />
               ) : (
-                <div className="flex aspect-[4/3] max-h-[280px] items-center justify-center rounded-md border border-dashed border-border bg-muted/30 text-sm text-muted-foreground">
+                <div className="flex aspect-[4/3] max-h-[280px] items-center justify-center rounded-xl border border-dashed border-border/80 bg-muted/40 text-sm text-muted-foreground">
                   尚未載入檔案
                 </div>
               )}
@@ -358,33 +395,66 @@ export function Wizard() {
             />
           )}
           <div className="grid gap-6 md:grid-cols-2">
-            <FieldGroup label="風格關鍵詞">
+            <FieldGroup
+              label={
+                <span className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-2.5">
+                  <span>風格關鍵詞</span>
+                  <span className="text-xs font-normal text-muted-foreground sm:text-[13px]">
+                    Style keywords
+                  </span>
+                </span>
+              }
+            >
               <div className="flex flex-wrap gap-2">
-                {STYLE_KEYWORDS.map((k) => (
-                  <Button
-                    key={k}
-                    type="button"
-                    size="sm"
-                    variant={styleKeyword === k ? "default" : "secondary"}
-                    onClick={() => setOptions({ styleKeyword: k })}
-                  >
-                    {k}
-                  </Button>
-                ))}
+                {STYLE_KEYWORD_PRESETS.map((k) => {
+                  const selected = styleKeyword === k.id;
+                  return (
+                    <Button
+                      key={k.id}
+                      type="button"
+                      size="sm"
+                      variant={selected ? "default" : "secondary"}
+                      className="h-auto min-h-0 min-w-0 max-w-full flex-col items-stretch gap-0.5 whitespace-normal px-3 py-2 text-left [overflow-wrap:anywhere]"
+                      onClick={() => setOptions({ styleKeyword: k.id })}
+                    >
+                      <span className="text-[13px] font-semibold leading-tight">
+                        {k.labelZh}
+                      </span>
+                      <span
+                        className={`text-[11px] font-normal leading-tight ${
+                          selected
+                            ? "text-primary-foreground/85"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {k.labelEn}
+                      </span>
+                    </Button>
+                  );
+                })}
               </div>
             </FieldGroup>
 
-            <FieldGroup label="色系">
+            <FieldGroup
+              label={
+                <>
+                  <span className="font-medium">色系</span>
+                  <span className="ml-1.5 font-normal text-muted-foreground">
+                    Color scheme
+                  </span>
+                </>
+              }
+            >
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {PALETTES.map((p) => (
                   <button
                     key={p.id}
                     type="button"
                     onClick={() => setOptions({ paletteId: p.id })}
-                    className={`flex items-center gap-2 rounded-lg border p-3 text-left text-sm transition-colors ${
+                    className={`flex items-center gap-3 rounded-xl border p-3.5 text-left text-sm transition-all duration-200 ${
                       paletteId === p.id
-                        ? "border-primary bg-card ring-2 ring-primary/20"
-                        : "border-border bg-card hover:bg-muted"
+                        ? "border-primary/60 bg-primary/5 shadow-soft ring-2 ring-primary/25"
+                        : "border-border/80 bg-card/80 hover:border-primary/20 hover:bg-muted/50"
                     }`}
                   >
                     <span
@@ -398,8 +468,8 @@ export function Wizard() {
                 ))}
               </div>
               <p className="text-xs leading-relaxed text-muted-foreground">
-                向量 SVG：三版本字色分別為「正文色 / 主色 / 次要色」。PDF
-                頁為點陣，字色隨整頁濾鏡一併改變。
+                向量 SVG：三版本字色為「正文 / 主色 / 次要色」。PDF
+                頁為點陣時，色系以「保留大部分原圖 + 輕量主色調和」呈現，避免整張像套濾鏡；若要依每張圖內容單獨調色，需後端影像分析或生成流程。
               </p>
             </FieldGroup>
 
@@ -431,26 +501,67 @@ export function Wizard() {
               </p>
             </FieldGroup>
 
-            <FieldGroup label="網格分區重排">
-              <div className="flex flex-col gap-2">
+            <FieldGroup
+              label={
+                <span className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-2.5">
+                  <span>網格分區重排</span>
+                  <span className="text-xs font-normal text-muted-foreground sm:text-[13px]">
+                    Grid partition remix
+                  </span>
+                </span>
+              }
+            >
+              <div className="flex flex-col gap-2.5">
                 {GRID_PRESETS.map((g) => (
                   <Button
                     key={g.id}
                     type="button"
                     variant={gridPresetId === g.id ? "default" : "secondary"}
-                    className="h-auto justify-start py-2 text-left"
+                    className="h-auto w-full min-w-0 items-start justify-start gap-0 whitespace-normal rounded-xl px-4 py-3.5 text-left"
                     onClick={() => setOptions({ gridPresetId: g.id })}
                   >
-                    <span className="block font-medium">{g.label}</span>
-                    {g.cols > 0 ? (
-                      <span className="block text-xs font-normal opacity-80">
-                        三版本：順序不變 / 區塊反向 / 偽隨機重排（每頁種子不同）
+                    <span className="flex w-full min-w-0 flex-col gap-2 text-left">
+                      <span className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:flex-wrap sm:items-baseline sm:gap-x-2 sm:gap-y-0">
+                        <span className="break-words text-[15px] font-semibold leading-snug">
+                          {g.labelZh}
+                        </span>
+                        <span
+                          className={`text-xs font-medium leading-snug sm:text-[13px] ${
+                            gridPresetId === g.id
+                              ? "text-primary-foreground/85"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {g.labelEn}
+                        </span>
                       </span>
-                    ) : (
-                      <span className="block text-xs font-normal opacity-80">
-                        僅版面微移與濾鏡示範
+                      <span
+                        className={`min-w-0 space-y-1 border-t pt-2 text-xs leading-relaxed [overflow-wrap:anywhere] ${
+                          gridPresetId === g.id
+                            ? "border-primary-foreground/25"
+                            : "border-border/50"
+                        }`}
+                      >
+                        <span
+                          className={`block break-words ${
+                            gridPresetId === g.id
+                              ? "text-primary-foreground/90"
+                              : "text-foreground/85"
+                          }`}
+                        >
+                          {g.hintZh}
+                        </span>
+                        <span
+                          className={`block break-words text-[11px] leading-relaxed ${
+                            gridPresetId === g.id
+                              ? "text-primary-foreground/75"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {g.hintEn}
+                        </span>
                       </span>
-                    )}
+                    </span>
                   </Button>
                 ))}
               </div>
@@ -546,7 +657,7 @@ export function Wizard() {
                     : "示範：三版本為不同版式縮放 + 色相微調；正式版由 AI 產出。"}
               </p>
             </div>
-            <Badge variant="outline">
+            <Badge variant="outline" className="border-primary/25 bg-primary/5 px-3 py-1 text-primary">
               {CANVAS_PRESETS.find((c) => c.id === canvasPresetId)?.label}
             </Badge>
           </div>
@@ -559,7 +670,9 @@ export function Wizard() {
               <Card
                 key={i}
                 className={
-                  selectedForPage === i ? "ring-2 ring-primary ring-offset-2" : ""
+                  selectedForPage === i
+                    ? "border-primary/45 ring-2 ring-primary/35 ring-offset-2 ring-offset-background shadow-lift"
+                    : "opacity-[0.97] hover:border-border"
                 }
               >
                 <CardHeader className="pb-2">
@@ -656,7 +769,7 @@ export function Wizard() {
                     onValueChange={(v) => setCompare(v[0] ?? 0)}
                   />
                 </div>
-                <div className="relative aspect-[16/10] overflow-hidden rounded-lg border border-border bg-muted/30">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-border/80 bg-gradient-to-b from-muted/40 to-muted/20 shadow-inner">
                   <div
                     className="absolute inset-0"
                     style={{
@@ -755,12 +868,22 @@ export function Wizard() {
             <CardHeader>
               <CardTitle>匯出</CardTitle>
               <CardDescription>
-                下載每頁已選版本的 SVG（示範包裝層可於正式版替換為真實 AI
-                重排結果）。Figma 相容 JSON / 插件可後續串接。
+                可下載<strong className="font-medium text-foreground">單一 PDF</strong>
+                （各頁光栅合併，便於分享列印），或下載每頁
+                <strong className="font-medium text-foreground">向量 SVG</strong>
+                供 Figma / 編輯器再改。示範包裝層可於正式版替換為真實 AI 重排。
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-3">
-              <Button type="button" onClick={exportAll}>
+              <Button
+                type="button"
+                onClick={() => void exportPdf()}
+                disabled={pdfExporting}
+              >
+                <FileDown className="size-4" />
+                {pdfExporting ? "正在產生 PDF…" : "下載 PDF（合併）"}
+              </Button>
+              <Button type="button" variant="secondary" onClick={exportAll}>
                 <Download className="size-4" />
                 下載全部 SVG
               </Button>
@@ -776,7 +899,7 @@ export function Wizard() {
                   <SvgInlinePreview
                     key={i}
                     svg={svg}
-                    className="aspect-[4/3] border bg-white"
+                    className="aspect-[4/3] border border-border/70 bg-white shadow-soft"
                   />
                 ),
             )}
@@ -802,27 +925,49 @@ function StepIndicator({ step }: { step: string }) {
   ];
   const idx = steps.findIndex((s) => s.id === step);
   return (
-    <ol className="flex flex-wrap gap-2 text-xs text-muted-foreground md:text-sm">
-      {steps.map((s, i) => (
-        <li key={s.id} className="flex items-center gap-2">
-          <span
-            className={`flex size-7 items-center justify-center rounded-full border text-xs font-medium ${
-              i <= idx
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-card"
-            }`}
-          >
-            {i + 1}
-          </span>
-          <span className={i === idx ? "font-medium text-foreground" : ""}>
-            {s.label}
-          </span>
-          {i < steps.length - 1 && (
-            <span className="hidden text-border sm:inline">/</span>
-          )}
-        </li>
-      ))}
-    </ol>
+    <nav aria-label="流程步驟" className="w-full">
+      <ol className="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:grid md:grid-cols-4 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden">
+        {steps.map((s, i) => {
+          const done = i < idx;
+          const active = i === idx;
+          return (
+            <li
+              key={s.id}
+              className="min-w-[42%] shrink-0 snap-start sm:min-w-[36%] md:min-w-0"
+            >
+              <div
+                className={`flex h-full items-center gap-3 rounded-2xl border px-3 py-3 transition-all duration-200 md:px-4 ${
+                  active
+                    ? "border-primary/40 bg-primary text-primary-foreground shadow-lift"
+                    : done
+                      ? "border-primary/20 bg-primary/10 text-primary"
+                      : "border-border/70 bg-card/60 text-muted-foreground"
+                }`}
+              >
+                <span
+                  className={`flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                    active
+                      ? "bg-white/20 text-primary-foreground"
+                      : done
+                        ? "bg-primary/15 text-primary"
+                        : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {done ? <Check className="size-4" strokeWidth={2.5} /> : i + 1}
+                </span>
+                <span
+                  className={`text-sm font-semibold leading-tight ${
+                    active ? "text-primary-foreground" : ""
+                  }`}
+                >
+                  {s.label}
+                </span>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
   );
 }
 
@@ -830,12 +975,14 @@ function FieldGroup({
   label,
   children,
 }: {
-  label: string;
+  label: ReactNode;
   children: ReactNode;
 }) {
   return (
-    <div className="space-y-3 rounded-lg border border-border bg-card p-4 shadow-sm">
-      <Label className="text-base">{label}</Label>
+    <div className="space-y-4 rounded-2xl border border-border/60 bg-card/85 p-5 shadow-soft ring-1 ring-slate-950/5 backdrop-blur-sm">
+      <Label className="block text-sm font-semibold tracking-tight text-foreground">
+        {label}
+      </Label>
       {children}
     </div>
   );

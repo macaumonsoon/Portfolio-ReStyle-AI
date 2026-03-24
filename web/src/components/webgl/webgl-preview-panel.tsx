@@ -7,14 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { SvgInlinePreview } from "@/components/svg-inline-preview";
 
-const SvgWebglPreview = dynamic(() => import("./svg-webgl-preview"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex h-80 items-center justify-center bg-muted/50 text-sm text-muted-foreground">
-      載入 WebGL 模組…
-    </div>
-  ),
-});
+const SvgWebglPreview = dynamic(
+  () => import("@/components/webgl/svg-webgl-preview"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-80 items-center justify-center bg-muted/50 text-sm text-muted-foreground">
+        載入 WebGL 模組…
+      </div>
+    ),
+  },
+);
 
 type Props = {
   /** 與 2D 預覽相同的 SVG SSOT（通常為當前選定版本） */

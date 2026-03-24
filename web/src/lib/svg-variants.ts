@@ -158,8 +158,8 @@ function buildVectorSoftFilter(index: 0 | 1 | 2): string {
 }
 
 /**
- * PDF 點陣頁：強烈改色。
- * v0 主色雙色調、v1 次要色雙色調、v2 大角度色相 + 飽和對比。
+ * PDF / 內嵌點陣：示範用「色系調和」——保留大部分原圖，只混入少量主色傾向；
+ * 非逐張圖內容分析（那需後端 CV / 生成模型）。
  */
 function buildPdfRasterFilter(
   index: 0 | 1 | 2,
@@ -176,42 +176,56 @@ function buildPdfRasterFilter(
                 0.2126 0.7152 0.0722 0 0
                 0 0 0 1 0" result="prGray"/>`;
 
+  /** 較輕的雙色調層，再與原圖算術混合 → 不像整張濾鏡 */
+  const softDuo = (color: string, floodOp: string, hueExtra: string) => `
+      ${gray}
+      <feFlood flood-color="${color}" flood-opacity="${floodOp}" result="prFlood"/>
+      <feBlend in="prGray" in2="prFlood" mode="multiply" result="prDuotone"/>
+      ${hueExtra}`;
+
   if (index === 0) {
     return `
-      ${gray}
-      <feFlood flood-color="${a}" flood-opacity="0.62" result="prFlood"/>
-      <feBlend in="prGray" in2="prFlood" mode="multiply" result="prDuotone"/>
-      <feColorMatrix in="prDuotone" type="matrix" values="
-        1.12 0 0 0 0.02
-        0 1.08 0 0 0.02
-        0 0 1.05 0 0.02
-        0 0 0 1 0"/>`;
+      ${softDuo(
+        a,
+        "0.38",
+        `<feColorMatrix in="prDuotone" type="matrix" values="
+        1.06 0 0 0 0.01
+        0 1.04 0 0 0.01
+        0 0 1.03 0 0.01
+        0 0 0 1 0" result="prTint"/>`,
+      )}
+      <feComposite in="SourceGraphic" in2="prTint" operator="arithmetic"
+        k1="0" k2="0.82" k3="0.18" k4="0" result="prOut"/>`;
   }
 
   if (index === 1) {
     return `
-      ${gray}
-      <feFlood flood-color="${m}" flood-opacity="0.58" result="prFlood"/>
-      <feBlend in="prGray" in2="prFlood" mode="multiply" result="prDuotone"/>
-      <feColorMatrix in="prDuotone" type="hueRotate" values="28" result="prHue"/>
+      ${softDuo(
+        m,
+        "0.36",
+        `<feColorMatrix in="prDuotone" type="hueRotate" values="18" result="prHue"/>
       <feColorMatrix in="prHue" type="matrix" values="
-        1.05 0.08 0 0 0
-        0.05 1.1 0.05 0 0
-        0 0.08 1.08 0 0
-        0 0 0 1 0"/>`;
+        1.03 0.04 0 0 0
+        0.03 1.05 0.03 0 0
+        0 0.04 1.04 0 0
+        0 0 0 1 0" result="prTint"/>`,
+      )}
+      <feComposite in="SourceGraphic" in2="prTint" operator="arithmetic"
+        k1="0" k2="0.76" k3="0.24" k4="0" result="prOut"/>`;
   }
 
   return `
-      <feColorMatrix in="SourceGraphic" type="hueRotate" values="198" result="prH"/>
-      <feColorMatrix in="prH" type="matrix" values="
-        1.35 0.12 0.08 0 -0.04
-        0.1 1.25 0.1 0 -0.03
-        0.08 0.12 1.3 0 -0.04
+      <feColorMatrix in="SourceGraphic" type="hueRotate" values="12" result="prH1"/>
+      <feColorMatrix in="prH1" type="saturate" values="1.06" result="prH2"/>
+      <feColorMatrix in="prH2" type="matrix" values="
+        1.04 0.02 0.02 0 -0.01
+        0.02 1.08 0.03 0 -0.01
+        0.02 0.03 1.05 0 -0.01
         0 0 0 1 0" result="prSat"/>
       <feComponentTransfer in="prSat" result="prOut">
-        <feFuncR type="linear" slope="1.08" intercept="-0.03"/>
-        <feFuncG type="linear" slope="1.08" intercept="-0.03"/>
-        <feFuncB type="linear" slope="1.08" intercept="-0.03"/>
+        <feFuncR type="linear" slope="1.02" intercept="-0.01"/>
+        <feFuncG type="linear" slope="1.02" intercept="-0.01"/>
+        <feFuncB type="linear" slope="1.02" intercept="-0.01"/>
       </feComponentTransfer>`;
 }
 

@@ -4,16 +4,17 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default:
+          "bg-primary text-primary-foreground shadow-soft hover:bg-primary/92 hover:shadow-lift",
         secondary:
-          "bg-card text-foreground border border-border shadow-sm hover:bg-muted",
-        ghost: "hover:bg-muted",
+          "border border-border/80 bg-card/90 text-foreground shadow-soft hover:border-border hover:bg-muted/80",
+        ghost: "hover:bg-muted/80",
         outline:
-          "border border-border bg-transparent hover:bg-muted",
+          "border border-border/80 bg-card/40 hover:border-primary/25 hover:bg-accent/60",
       },
       size: {
         default: "h-10 px-4 py-2",

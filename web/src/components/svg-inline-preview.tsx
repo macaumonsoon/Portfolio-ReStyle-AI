@@ -19,12 +19,11 @@ export function SvgInlinePreview({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-md border border-border bg-muted/40 [&_svg]:h-auto [&_svg]:max-h-full [&_svg]:w-full",
+        "overflow-hidden rounded-xl border border-border/80 bg-muted/30 shadow-inner [&_svg]:h-auto [&_svg]:max-h-full [&_svg]:w-full",
         suppressFilter && "[&_.pr-content]:!filter-none",
         className,
       )}
       title={title}
-      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
