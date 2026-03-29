@@ -23,6 +23,8 @@ type Props = {
   svg: string;
   motion: boolean;
   className?: string;
+  /** 為 true 時降低光栅解析度，重試 WebGL 時較易成功（大圖 / PDF 頁） */
+  rasterDownshift?: boolean;
   onRasterError?: () => void;
 };
 
@@ -34,6 +36,7 @@ export default function SvgWebglPreview({
   svg,
   motion,
   className,
+  rasterDownshift,
   onRasterError,
 }: Props) {
   const [ready, setReady] = useState(false);
@@ -76,6 +79,7 @@ export default function SvgWebglPreview({
           <BakedSvgMesh
             svg={svg}
             motion={motion}
+            rasterDownshift={rasterDownshift}
             onReady={handleReady}
             onError={handleError}
           />

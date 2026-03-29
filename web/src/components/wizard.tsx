@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import dynamic from "next/dynamic";
 import {
   ArrowRight,
   Check,
@@ -26,23 +27,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SvgInlinePreview } from "@/components/svg-inline-preview";
-import { DemoTextPositionPanel } from "@/components/demo-text-position-panel";
 import { PdfTextEditorPanel } from "@/components/pdf-text-editor-panel";
 import { SvgTextEditorPanel } from "@/components/svg-text-editor-panel";
 import { UploadPdfDialog } from "@/components/upload-pdf-dialog";
 import { LivePreviewTestDock } from "@/components/live-preview-test-dock";
-import { WebglPreviewPanel } from "@/components/webgl/webgl-preview-panel";
+import { fitSvgIntoCanvasViewport } from "@/lib/svg-canvas-fit";
 import { buildThreeVariants, type CompareMode } from "@/lib/svg-variants";
 import { computeOrderedSourceIndices } from "@/lib/page-order";
 import { downloadBlob, downloadTextFile } from "@/lib/download";
-import { buildPdfFromFinalizedSvgs } from "@/lib/svg-export-pdf";
 import { useResolvedSourcePageIndex } from "@/hooks/use-resolved-source-page-index";
-import {
-  DEMO_FILE_NAME,
-  DEMO_TEXT_DEFAULT,
-  buildDemoSvg,
-  type DemoTextLayout,
-} from "@/lib/demo-svg";
 import type { PdfPageLayer } from "@/lib/pdf-page-types";
 import {
   CANVAS_PRESETS,
@@ -54,20 +47,32 @@ import {
   useProjectStore,
 } from "@/store/use-project-store";
 
+/** 與主流程分 chunk，避免 dev 下 Webpack 模組載入順序導致 `reading 'call'` */
+const WebglPreviewPanel = dynamic(
+  () =>
+    import("@/components/webgl/webgl-preview-panel").then((m) => ({
+      default: m.WebglPreviewPanel,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-80 items-center justify-center rounded-lg border border-dashed border-border/80 bg-muted/30 text-sm text-muted-foreground">
+        載入 Three.js 預覽…
+      </div>
+    ),
+  },
+);
+
 export function Wizard() {
   const svgInputRef = useRef<HTMLInputElement>(null);
   const [compare, setCompare] = useState(50);
   const [compareMode, setCompareMode] = useState<CompareMode>("both");
   const [pdfExporting, setPdfExporting] = useState(false);
-  const [demoLayout, setDemoLayout] = useState<DemoTextLayout>(() => ({
-    ...DEMO_TEXT_DEFAULT,
-  }));
 
   const step = useProjectStore((s) => s.step);
   const setStep = useProjectStore((s) => s.setStep);
   const setFile = useProjectStore((s) => s.setFile);
   const setPdfImport = useProjectStore((s) => s.setPdfImport);
-  const patchSourceSvg = useProjectStore((s) => s.patchSourceSvg);
   const setOptions = useProjectStore((s) => s.setOptions);
   const setOrderedSourceIndices = useProjectStore((s) => s.setOrderedSourceIndices);
   const reset = useProjectStore((s) => s.reset);
@@ -141,27 +146,44 @@ export function Wizard() {
     };
   }, [compareMode, currentPageSvg, previewAfter]);
 
-  /** 右側「即時預覽測試」面板：隨步驟與選項更新 */
+  /** 右側「即時預覽測試」面板：隨步驟與選項更新（畫布尺寸會縮放置入預覽框） */
   const livePreviewSvg = useMemo(() => {
     const first = pageSvgs[0] ?? "";
     if (!first) return "";
+    const canvas =
+      CANVAS_PRESETS.find((c) => c.id === canvasPresetId) ?? CANVAS_PRESETS[0];
+    const fit = (svg: string) =>
+      fitSvgIntoCanvasViewport(svg, canvas.width, canvas.height);
+
     if (step === "upload") return first;
     if (step === "options") {
-      return buildThreeVariants(first, 0, ctx, { isPdfRaster: isPdf })[0];
+      const v = buildThreeVariants(first, 0, ctx, { isPdfRaster: isPdf })[0];
+      return fit(v);
     }
-    if (step === "pages") return previewAfter;
+    if (step === "pages") {
+      if (!previewAfter) return "";
+      return fit(previewAfter);
+    }
     if (step === "export") {
       const hit = finalizedPageSvgs.find(Boolean);
-      return hit ?? first;
+      return fit(hit ?? first);
     }
     return first;
-  }, [step, pageSvgs, ctx, isPdf, previewAfter, finalizedPageSvgs]);
+  }, [
+    step,
+    pageSvgs,
+    ctx,
+    isPdf,
+    previewAfter,
+    finalizedPageSvgs,
+    canvasPresetId,
+  ]);
 
   const livePreviewCaption = useMemo(() => {
     if (!pageSvgs.length) return "請先上傳 SVG 或 PDF。";
     if (step === "upload") return "第一頁原稿（與上傳步驟內預覽一致）。";
     if (step === "options") {
-      return "以第一頁即時套用目前選項：風格、色系、網格、字體等；調整後立即反映。";
+      return "以第一頁即時套用：風格關鍵詞、色系、畫布比例、網格、字體等；右側預覽會隨選項更新。";
     }
     if (step === "pages") {
       return `瀏覽第 ${currentPageIndex + 1} 步 · 原稿第 ${sourcePageIndex + 1} 頁 · 顯示已選版本（未選時為版本 1）。`;
@@ -197,22 +219,6 @@ export function Wizard() {
     [setPdfImport],
   );
 
-  const updateDemoLayout = useCallback(
-    (next: DemoTextLayout) => {
-      setDemoLayout(next);
-      patchSourceSvg(buildDemoSvg(next));
-    },
-    [patchSourceSvg],
-  );
-
-  const loadDemo = useCallback(() => {
-    const base = { ...DEMO_TEXT_DEFAULT };
-    setDemoLayout(base);
-    setFile(DEMO_FILE_NAME, buildDemoSvg(base), false);
-  }, [setFile]);
-
-  const isDemoFile = fileName === DEMO_FILE_NAME && !isPdf;
-
   const canLeaveUpload = pageSvgs.length > 0;
   const totalPages = pageSvgs.length;
   const allPagesChosen =
@@ -237,6 +243,7 @@ export function Wizard() {
   const exportPdf = useCallback(async () => {
     setPdfExporting(true);
     try {
+      const { buildPdfFromFinalizedSvgs } = await import("@/lib/svg-export-pdf");
       const blob = await buildPdfFromFinalizedSvgs(finalizedPageSvgs);
       if (!blob) {
         alert("無法產生 PDF（沒有可匯出的頁面或光栅失敗）。");
@@ -253,7 +260,7 @@ export function Wizard() {
   }, [fileName, finalizedPageSvgs]);
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-[min(90rem,100%)] flex-col gap-12 px-4 py-10 sm:py-14 lg:flex-row lg:items-start lg:gap-10 lg:px-10">
+    <div className="mx-auto flex min-h-screen w-full max-w-[min(90rem,100%)] flex-col gap-12 px-4 py-10 sm:py-14 lg:flex-row lg:items-stretch lg:gap-10 lg:px-10">
       <div className="flex min-w-0 flex-1 flex-col gap-12 pb-24 lg:pb-0">
       <header className="relative flex flex-col gap-8 border-b border-border/60 pb-10 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl space-y-4">
@@ -321,14 +328,6 @@ export function Wizard() {
                 選擇 SVG
               </Button>
               <UploadPdfDialog onImported={onPdfImported} />
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={loadDemo}
-              >
-                載入示範 SVG
-              </Button>
               {fileName && (
                 <p className="text-sm text-muted-foreground">
                   已選：<span className="font-medium text-foreground">{fileName}</span>
@@ -364,15 +363,6 @@ export function Wizard() {
             </CardContent>
           </Card>
 
-          {isDemoFile && (
-            <div className="md:col-span-2">
-              <DemoTextPositionPanel
-                layout={demoLayout}
-                onLayoutChange={updateDemoLayout}
-              />
-            </div>
-          )}
-
           <div className="md:col-span-2 flex justify-end">
             <Button
               type="button"
@@ -388,12 +378,6 @@ export function Wizard() {
 
       {step === "options" && (
         <section className="space-y-8">
-          {isDemoFile && (
-            <DemoTextPositionPanel
-              layout={demoLayout}
-              onLayoutChange={updateDemoLayout}
-            />
-          )}
           <div className="grid gap-6 md:grid-cols-2">
             <FieldGroup
               label={

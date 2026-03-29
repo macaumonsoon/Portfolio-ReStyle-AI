@@ -1,23 +1,11 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useState } from "react";
 import { Box } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { SvgInlinePreview } from "@/components/svg-inline-preview";
-
-const SvgWebglPreview = dynamic(
-  () => import("@/components/webgl/svg-webgl-preview"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex h-80 items-center justify-center bg-muted/50 text-sm text-muted-foreground">
-        載入 WebGL 模組…
-      </div>
-    ),
-  },
-);
+import SvgWebglPreview from "@/components/webgl/svg-webgl-preview";
 
 type Props = {
   /** 與 2D 預覽相同的 SVG SSOT（通常為當前選定版本） */
@@ -25,11 +13,14 @@ type Props = {
 };
 
 /**
- * Three.js 預覽層入口：`next/dynamic` + `ssr: false`，符合 technical-three.md。
+ * Three.js 預覽層：本檔由 wizard 外層 dynamic(ssr:false) 載入，此處不再嵌套 dynamic，
+ * 避免 dev 下 Webpack 雙重 async chunk 觸發 `reading 'call'`。
  */
 export function WebglPreviewPanel({ svg }: Props) {
   const [motion, setMotion] = useState(true);
   const [fallback2d, setFallback2d] = useState(false);
+  /** 每次重試遞增，強制 remount Canvas + 可下調光栅負載 */
+  const [webglRetryGen, setWebglRetryGen] = useState(0);
 
   if (fallback2d) {
     return (
@@ -42,7 +33,10 @@ export function WebglPreviewPanel({ svg }: Props) {
           type="button"
           size="sm"
           variant="secondary"
-          onClick={() => setFallback2d(false)}
+          onClick={() => {
+            setWebglRetryGen((n) => n + 1);
+            setFallback2d(false);
+          }}
         >
           重試 WebGL
         </Button>
@@ -68,9 +62,11 @@ export function WebglPreviewPanel({ svg }: Props) {
       </div>
       <div className="relative h-80 w-full overflow-hidden rounded-lg border border-border bg-muted/20">
         <SvgWebglPreview
+          key={`webgl-${webglRetryGen}`}
           svg={svg}
           motion={motion}
           className="h-full w-full"
+          rasterDownshift={webglRetryGen > 0}
           onRasterError={() => setFallback2d(true)}
         />
       </div>

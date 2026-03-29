@@ -2,7 +2,14 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["pdfjs-dist"],
+  /** 部分依賴為 ESM / 混合格式，預編譯可避免 Webpack runtime 取模組時出錯 */
+  transpilePackages: [
+    "pdfjs-dist",
+    "jspdf",
+    "three",
+    "@react-three/fiber",
+    "@react-three/drei",
+  ],
   /**
    * 關閉 Next 15 預設的 Segment Explorer，避免 dev 下
    *「React Client Manifest / SegmentViewNode」與後續 chunk 錯亂（樣式與客戶端腳本載入失敗時頁面會像「沒套 Tailwind」）。

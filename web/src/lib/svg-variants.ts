@@ -1,4 +1,4 @@
-import type { ProjectState } from "@/store/use-project-store";
+import type { ProjectState, StyleKeywordId } from "@/store/use-project-store";
 import { GRID_PRESETS, PALETTES } from "@/store/use-project-store";
 import { applyGridRemix } from "@/lib/grid-remix";
 
@@ -9,6 +9,20 @@ const VARIANT_LAYOUT = [
   { tx: 6, ty: 22, s: 0.94 },
   { tx: 18, ty: 6, s: 0.95 },
 ] as const;
+
+/** 風格關鍵詞：在示範位移/縮放上疊加可感知差異（即時預覽與三版本一致） */
+function styleKeywordNudge(keyword: StyleKeywordId): { tx: number; ty: number; scaleMul: number } {
+  const map: Record<StyleKeywordId, { tx: number; ty: number; scaleMul: number }> = {
+    Bold: { tx: 2, ty: 2, scaleMul: 1.015 },
+    Minimal: { tx: -3, ty: -3, scaleMul: 0.985 },
+    Futuristic: { tx: -5, ty: 8, scaleMul: 1.0 },
+    Narrative: { tx: 0, ty: 10, scaleMul: 1.0 },
+    Vintage: { tx: 5, ty: 5, scaleMul: 0.98 },
+    Elegant: { tx: -2, ty: 5, scaleMul: 0.985 },
+    Playful: { tx: 12, ty: -14, scaleMul: 1.025 },
+  };
+  return map[keyword];
+}
 
 export type BuildVariantsOptions = {
   /** PDF 轉頁為點陣內嵌時，使用強烈雙色調 / 色相重塑 */
@@ -46,6 +60,8 @@ export function buildThreeVariants(
     gridPreset.cols > 0 &&
     gridPreset.rows > 0;
 
+  const nudge = styleKeywordNudge(ctx.styleKeyword);
+
   return [0, 1, 2].map((i) => {
     const remixed = gridOn
       ? applyGridRemix(pageSvg, {
@@ -62,6 +78,7 @@ export function buildThreeVariants(
       muted: palette.muted,
       text: palette.text,
       styleBoost,
+      styleNudge: nudge,
       narrative: ctx.narrativeId,
       fontHint: ctx.fontStyleId,
       isPdfRaster,
@@ -82,6 +99,7 @@ type WrapOpts = {
   muted: string;
   text: string;
   styleBoost: number;
+  styleNudge: { tx: number; ty: number; scaleMul: number };
   narrative: string;
   fontHint: string;
   isPdfRaster: boolean;
@@ -109,9 +127,13 @@ function buildTextPaintCss(fill: string, isPdfRaster: boolean): string {
 
 function wrapVariant(svg: string, opts: WrapOpts): string {
   const layout = VARIANT_LAYOUT[opts.index];
-  const tx = layout.tx * opts.styleBoost;
-  const ty = layout.ty * opts.styleBoost;
-  const s = layout.s * (opts.index === 1 ? 0.99 : 1) * opts.styleBoost;
+  const tx = (layout.tx + opts.styleNudge.tx) * opts.styleBoost;
+  const ty = (layout.ty + opts.styleNudge.ty) * opts.styleBoost;
+  const s =
+    layout.s *
+    (opts.index === 1 ? 0.99 : 1) *
+    opts.styleBoost *
+    opts.styleNudge.scaleMul;
 
   const filterId = `pr-p${opts.pageIndex}-v${opts.index}`;
   const filterInner = opts.isPdfRaster

@@ -31,7 +31,6 @@ npm run dev
 | `src/components/wizard.tsx` | 主流程 UI |
 | `src/store/use-project-store.ts` | 全域步驟與選擇狀態 |
 | `src/lib/svg-variants.ts` | 三版本示範生成 |
-| `src/lib/demo-svg.ts` | 內建示範頁 |
 | `src/lib/svg-rasterize.ts` | SVG → Canvas（供 WebGL 紋理） |
 | `src/components/webgl/*` | Three.js 預覽（dynamic / ssr:false） |
 

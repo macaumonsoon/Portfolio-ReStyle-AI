@@ -143,8 +143,8 @@ export function LivePreviewTestDock({
         </Dialog>
       </div>
 
-      <aside className="hidden w-full min-w-0 shrink-0 lg:block lg:w-[min(100%,400px)] xl:w-[420px]">
-        <Card className="sticky top-4 flex max-h-[calc(100vh-2rem)] flex-col overflow-hidden border-primary/10 shadow-lift">
+      <aside className="hidden min-h-0 w-full min-w-0 shrink-0 lg:flex lg:w-[min(100%,400px)] lg:flex-col xl:w-[420px]">
+        <Card className="sticky top-6 z-30 flex max-h-[calc(100vh-2rem)] w-full flex-col border-primary/10 shadow-lift">
           <CardHeader className="shrink-0 space-y-1.5 pb-3">
             <CardTitle className="flex items-center gap-2.5 text-base font-semibold">
               <span className="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -156,7 +156,7 @@ export function LivePreviewTestDock({
               {caption}
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex min-h-0 flex-1 flex-col pt-0">
+          <CardContent className="flex min-h-0 flex-1 flex-col overflow-hidden pt-0">
             {dockBody}
           </CardContent>
         </Card>

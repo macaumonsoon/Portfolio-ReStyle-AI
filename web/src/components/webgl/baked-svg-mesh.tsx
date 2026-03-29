@@ -9,11 +9,19 @@ type Props = {
   svg: string;
   /** 極輕微展示動效（不影響匯出） */
   motion: boolean;
+  /** 降低長邊與 DPR，重試 WebGL 時減輕 Canvas / GPU 壓力 */
+  rasterDownshift?: boolean;
   onReady?: () => void;
   onError?: () => void;
 };
 
-export function BakedSvgMesh({ svg, motion, onReady, onError }: Props) {
+export function BakedSvgMesh({
+  svg,
+  motion,
+  rasterDownshift,
+  onReady,
+  onError,
+}: Props) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [map, setMap] = useState<THREE.CanvasTexture | null>(null);
   const seqRef = useRef(0);
@@ -52,7 +60,11 @@ export function BakedSvgMesh({ svg, motion, onReady, onError }: Props) {
     let cancelled = false;
 
     void (async () => {
-      const canvas = await rasterizeSvgToCanvas(svg, { maxSide: 2048, maxDpr: 2 });
+      const canvas = await rasterizeSvgToCanvas(svg, {
+        maxSide: rasterDownshift ? 1536 : 2048,
+        maxDpr: rasterDownshift ? 1 : 2,
+        retryWithoutPrFilter: true,
+      });
       if (cancelled || id !== seqRef.current) return;
       if (!canvas) {
         onErrorRef.current?.();
@@ -79,7 +91,7 @@ export function BakedSvgMesh({ svg, motion, onReady, onError }: Props) {
         return null;
       });
     };
-  }, [svg, gl, invalidate]);
+  }, [svg, gl, invalidate, rasterDownshift]);
 
   useFrame((state) => {
     const m = meshRef.current;
