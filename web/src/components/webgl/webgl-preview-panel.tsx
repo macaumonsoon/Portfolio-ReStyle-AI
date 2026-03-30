@@ -6,21 +6,36 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { SvgInlinePreview } from "@/components/svg-inline-preview";
 import SvgWebglPreview from "@/components/webgl/svg-webgl-preview";
+import { GridTileDragLayer } from "@/components/webgl/grid-tile-drag-layer";
+
+export type WebglGridTileDragConfig = {
+  pageIndex: number;
+  cols: number;
+  rows: number;
+};
 
 type Props = {
   /** 與 2D 預覽相同的 SVG SSOT（通常為當前選定版本） */
   svg: string;
+  /** 網格重排開啟且 SVG 含 mosaic 時，疊加可拖曳微調層 */
+  gridTileDrag?: WebglGridTileDragConfig | null;
 };
 
 /**
  * Three.js 預覽層：本檔由 wizard 外層 dynamic(ssr:false) 載入，此處不再嵌套 dynamic，
  * 避免 dev 下 Webpack 雙重 async chunk 觸發 `reading 'call'`。
  */
-export function WebglPreviewPanel({ svg }: Props) {
+export function WebglPreviewPanel({ svg, gridTileDrag }: Props) {
   const [motion, setMotion] = useState(true);
   const [fallback2d, setFallback2d] = useState(false);
   /** 每次重試遞增，強制 remount Canvas + 可下調光栅負載 */
   const [webglRetryGen, setWebglRetryGen] = useState(0);
+
+  const showTileDrag =
+    gridTileDrag &&
+    svg.includes("pr-grid-mosaic") &&
+    gridTileDrag.cols >= 2 &&
+    gridTileDrag.rows >= 2;
 
   if (fallback2d) {
     return (
@@ -28,7 +43,17 @@ export function WebglPreviewPanel({ svg }: Props) {
         <p className="text-xs text-muted-foreground">
           WebGL 或紋理烘焙失敗，已回退為 2D 向量預覽。
         </p>
-        <SvgInlinePreview svg={svg} className="h-80 border bg-white" />
+        <div className="relative">
+          <SvgInlinePreview svg={svg} className="h-80 border bg-white" />
+          {showTileDrag ? (
+            <GridTileDragLayer
+              svg={svg}
+              pageIndex={gridTileDrag.pageIndex}
+              cols={gridTileDrag.cols}
+              rows={gridTileDrag.rows}
+            />
+          ) : null}
+        </div>
         <Button
           type="button"
           size="sm"
@@ -69,6 +94,14 @@ export function WebglPreviewPanel({ svg }: Props) {
           rasterDownshift={webglRetryGen > 0}
           onRasterError={() => setFallback2d(true)}
         />
+        {showTileDrag ? (
+          <GridTileDragLayer
+            svg={svg}
+            pageIndex={gridTileDrag.pageIndex}
+            cols={gridTileDrag.cols}
+            rows={gridTileDrag.rows}
+          />
+        ) : null}
       </div>
       <p className="text-xs leading-relaxed text-muted-foreground">
         畫面為當前 SVG 的光栅預覽，可旋轉檢視；<strong className="font-medium text-foreground">匯出仍為可編輯 SVG</strong>

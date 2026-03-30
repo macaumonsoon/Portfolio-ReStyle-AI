@@ -30,11 +30,15 @@ export const PDF_OVERLAY_FONTS: Record<PdfTextFontKey, string> = {
   display: "'Helvetica Neue', Helvetica, Arial, sans-serif",
 };
 
-export const PDF_FONT_OPTIONS: { id: PdfTextFontKey; label: string }[] = [
-  { id: "sans", label: "無襯線 Sans" },
-  { id: "serif", label: "襯線 Serif" },
-  { id: "mono", label: "等寬 Mono" },
-  { id: "display", label: "展示 Display" },
+export const PDF_FONT_OPTIONS: {
+  id: PdfTextFontKey;
+  labelZh: string;
+  labelEn: string;
+}[] = [
+  { id: "sans", labelZh: "無襯線 Sans", labelEn: "Sans" },
+  { id: "serif", labelZh: "襯線 Serif", labelEn: "Serif" },
+  { id: "mono", labelZh: "等寬 Mono", labelEn: "Monospace" },
+  { id: "display", labelZh: "展示 Display", labelEn: "Display" },
 ];
 
 export function guessFontKey(pdfFontName: string): PdfTextFontKey {

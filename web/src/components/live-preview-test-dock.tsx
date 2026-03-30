@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AppWindow, Maximize2 } from "lucide-react";
+import { useUiLocale } from "@/contexts/ui-locale-context";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { PreviewBeforeAfterChrome } from "@/components/preview-before-after-chrome";
 import { SvgInlinePreview } from "@/components/svg-inline-preview";
 import {
   Dialog,
@@ -26,6 +28,7 @@ import { cn } from "@/lib/utils";
 type Props = {
   svg: string;
   caption: string;
+  /** 預設取自當前介面語言的 copy.dock.windowTitle */
   windowTitle?: string;
 };
 
@@ -33,60 +36,60 @@ function PreviewFrame({
   svg,
   zoomPercent,
   className,
+  emptyLabel,
 }: {
   svg: string;
   zoomPercent: number;
   className?: string;
+  emptyLabel: string;
 }) {
   const z = zoomPercent / 100;
   if (!svg) {
     return (
-      <div
-        className={cn(
-          "flex min-h-[200px] items-center justify-center rounded-2xl border border-dashed border-border/80 bg-muted/35 text-sm text-muted-foreground",
-          className,
-        )}
-      >
-        尚無可預覽內容
-      </div>
+      <PreviewBeforeAfterChrome className={className}>
+        <div className="flex min-h-[200px] items-center justify-center rounded-xl border border-dashed border-border/80 bg-card/90 text-sm text-muted-foreground">
+          {emptyLabel}
+        </div>
+      </PreviewBeforeAfterChrome>
     );
   }
   return (
-    <div
-      className={cn(
-        "overflow-auto rounded-2xl border border-border/70 bg-white shadow-inner ring-1 ring-slate-950/5",
-        className,
-      )}
-      style={{ maxHeight: "min(72vh, 820px)" }}
+    <PreviewBeforeAfterChrome
+      className={cn("flex min-h-0 flex-col", className)}
+      innerClassName="min-h-0 flex-1 overflow-hidden rounded-xl border border-border/70 bg-white shadow-inner ring-1 ring-slate-950/5"
     >
-      <div
-        className="origin-top p-2"
-        style={{
-          transform: `scale(${z})`,
-          transformOrigin: "top center",
-          width: z ? `${100 / z}%` : "100%",
-        }}
-      >
-        <SvgInlinePreview svg={svg} className="border-0 bg-transparent" />
+      <div className="max-h-[min(72vh,820px)] overflow-auto">
+        <div
+          className="origin-top p-2"
+          style={{
+            transform: `scale(${z})`,
+            transformOrigin: "top center",
+            width: z ? `${100 / z}%` : "100%",
+          }}
+        >
+          <SvgInlinePreview svg={svg} className="border-0 bg-transparent" />
+        </div>
       </div>
-    </div>
+    </PreviewBeforeAfterChrome>
   );
 }
 
 export function LivePreviewTestDock({
   svg,
   caption,
-  windowTitle = "Portfolio ReStyle · 即時預覽",
+  windowTitle: windowTitleProp,
 }: Props) {
+  const { copy } = useUiLocale();
+  const d = copy.dock;
+  const windowTitle = windowTitleProp ?? d.windowTitle;
+
   const [zoom, setZoom] = useState(100);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const popOut = () => {
     const w = openSvgPreviewWindow(svg, windowTitle);
     if (!w) {
-      window.alert(
-        "無法開啟預覽視窗，請檢查瀏覽器是否阻擋彈出式視窗，並允許本站彈窗後再試。",
-      );
+      window.alert(d.popoutFail);
     }
   };
 
@@ -102,11 +105,11 @@ export function LivePreviewTestDock({
           onClick={popOut}
         >
           <AppWindow className="size-4 shrink-0" />
-          獨立視窗
+          {d.popout}
         </Button>
       </div>
       <div className="space-y-2">
-        <Label className="text-xs text-muted-foreground">縮放測試 · {zoom}%</Label>
+        <Label className="text-xs text-muted-foreground">{d.zoom(zoom)}</Label>
         <Slider
           value={[zoom]}
           min={40}
@@ -115,7 +118,12 @@ export function LivePreviewTestDock({
           onValueChange={(v) => setZoom(v[0] ?? 100)}
         />
       </div>
-      <PreviewFrame svg={svg} zoomPercent={zoom} className="min-h-[220px] flex-1" />
+      <PreviewFrame
+        svg={svg}
+        zoomPercent={zoom}
+        className="min-h-[220px] flex-1"
+        emptyLabel={d.emptySvg}
+      />
     </div>
   );
 
@@ -130,12 +138,12 @@ export function LivePreviewTestDock({
               className="h-12 gap-2 rounded-full border-0 bg-gradient-to-r from-primary to-violet-600 px-5 shadow-lift"
             >
               <Maximize2 className="size-5" />
-              即時預覽
+              {d.mobileFab}
             </Button>
           </DialogTrigger>
           <DialogContent className="flex max-h-[90vh] w-[min(100vw-1.5rem,920px)] max-w-none flex-col gap-3 overflow-hidden rounded-2xl border-border/60 p-5 sm:p-6">
             <DialogHeader className="shrink-0 text-left">
-              <DialogTitle>即時預覽測試</DialogTitle>
+              <DialogTitle>{d.dialogTitle}</DialogTitle>
               <p className="text-sm text-muted-foreground">{caption}</p>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-hidden">{dockBody}</div>
@@ -150,7 +158,7 @@ export function LivePreviewTestDock({
               <span className="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Maximize2 className="size-4" />
               </span>
-              即時預覽測試
+              {d.cardTitle}
             </CardTitle>
             <CardDescription className="text-xs leading-relaxed">
               {caption}

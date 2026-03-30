@@ -10,7 +10,7 @@ export type GridRemixOpts = {
 };
 
 export function applyGridRemix(pageSvg: string, opts: GridRemixOpts | null): string {
-  if (!opts || opts.cols < 2 || opts.rows < 2) return pageSvg;
+  if (!opts || opts.cols * opts.rows < 2) return pageSvg;
 
   const parsed = parseSvgRoot(pageSvg);
   if (!parsed) return pageSvg;

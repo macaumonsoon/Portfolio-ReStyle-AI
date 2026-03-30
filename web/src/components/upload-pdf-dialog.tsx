@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { FileUp, Loader2 } from "lucide-react";
+import { useUiLocale } from "@/contexts/ui-locale-context";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,6 +22,9 @@ type Props = {
 };
 
 export function UploadPdfDialog({ onImported, disabled }: Props) {
+  const { copy } = useUiLocale();
+  const u = copy.uploadPdf;
+
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,26 +38,26 @@ export function UploadPdfDialog({ onImported, disabled }: Props) {
       try {
         const pages = await pdfFileToLayeredPages(file);
         if (!pages.length) {
-          setError("未能從 PDF 解析出任何頁面。");
+          setError(u.errNoPages);
           return;
         }
         onImported(file.name, pages);
         setOpen(false);
       } catch (e) {
-        const msg = e instanceof Error ? e.message : "PDF 解析失敗";
+        const msg = e instanceof Error ? e.message : u.errParse;
         setError(msg);
       } finally {
         setBusy(false);
       }
     },
-    [onImported],
+    [onImported, u.errNoPages, u.errParse],
   );
 
   const onPick = (files: FileList | null) => {
     const f = files?.[0];
     if (!f) return;
     if (!f.name.toLowerCase().endsWith(".pdf") && f.type !== "application/pdf") {
-      setError("請選擇 .pdf 檔案");
+      setError(u.errPickPdf);
       return;
     }
     void runImport(f);
@@ -64,7 +68,7 @@ export function UploadPdfDialog({ onImported, disabled }: Props) {
       <DialogTrigger asChild>
         <Button type="button" variant="secondary" className="w-full" disabled={disabled}>
           <FileUp className="size-4" />
-          上傳 PDF…
+          {u.trigger}
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -73,11 +77,8 @@ export function UploadPdfDialog({ onImported, disabled }: Props) {
         onEscapeKeyDown={(e) => busy && e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle>上傳 PDF 作品集</DialogTitle>
-          <DialogDescription>
-            將在瀏覽器內以 pdf.js 逐頁渲染，並抽出文字座標；在「頁面」步驟可修改文字內容與字體類型（覆蓋在底圖上）。最多
-            48 頁。
-          </DialogDescription>
+          <DialogTitle>{u.title}</DialogTitle>
+          <DialogDescription>{u.description}</DialogDescription>
         </DialogHeader>
 
         <input
@@ -123,13 +124,13 @@ export function UploadPdfDialog({ onImported, disabled }: Props) {
           {busy ? (
             <>
               <Loader2 className="size-8 animate-spin text-muted-foreground" />
-              <span>正在解析 PDF…</span>
+              <span>{u.parsing}</span>
             </>
           ) : (
             <>
               <FileUp className="size-8 text-muted-foreground" />
-              <span className="font-medium">拖放 PDF 到此，或點擊選擇檔案</span>
-              <span className="text-xs text-muted-foreground">僅限 .pdf</span>
+              <span className="font-medium">{u.drop}</span>
+              <span className="text-xs text-muted-foreground">{u.onlyPdf}</span>
             </>
           )}
         </div>

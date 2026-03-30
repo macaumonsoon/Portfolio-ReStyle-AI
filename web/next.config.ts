@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -6,6 +9,7 @@ const nextConfig: NextConfig = {
   transpilePackages: [
     "pdfjs-dist",
     "jspdf",
+    "svg2pdf.js",
     "three",
     "@react-three/fiber",
     "@react-three/drei",
@@ -19,6 +23,14 @@ const nextConfig: NextConfig = {
   },
   /** 降低 macOS 上 file watcher 數量，緩解 EMFILE；dev 用記憶體快取降低 .next/cache 損毀導致的 ENOENT / 樣式丟失 */
   webpack: (config, { dev }) => {
+    /** 強制 svg2pdf.js 與業務碼共用同一份 jspdf，否則 prototype 上的 .svg 不會掛到 new jsPDF() 實例 */
+    config.resolve = config.resolve ?? {};
+    const alias = config.resolve.alias as Record<string, string | false | string[]>;
+    config.resolve.alias = {
+      ...alias,
+      /** 不可指到 main（node 版會 require fs），須鎖定瀏覽器 ESM 包 */
+      jspdf: require.resolve("jspdf/dist/jspdf.es.min.js"),
+    };
     if (dev) {
       config.cache = { type: "memory" };
       config.watchOptions = {

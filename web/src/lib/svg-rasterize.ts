@@ -34,13 +34,29 @@ export function stripPrContentSvgFilter(svg: string): string {
   return svg.replace(/filter:\s*url\(#[^)]+\)\s*;?/gi, "filter: none;");
 }
 
+/** 再移除所有 `<filter>…</filter>` 定義（部分複雜 fe* 鏈在作為 `<img>` 解碼時會整圖失敗） */
+export function stripSvgFilterElements(svg: string): string {
+  let s = stripPrContentSvgFilter(svg);
+  s = s.replace(/<filter\b[^>]*>[\s\S]*?<\/filter>/gi, "");
+  return s;
+}
+
+function isDrawableSvgImage(img: HTMLImageElement): boolean {
+  return img.naturalWidth >= 1 && img.naturalHeight >= 1;
+}
+
 function loadImageFromSvgSources(svg: string): Promise<HTMLImageElement | null> {
   return new Promise((resolve) => {
+    const finish = (img: HTMLImageElement | null) => {
+      if (!img || !isDrawableSvgImage(img)) resolve(null);
+      else resolve(img);
+    };
+
     const tryDataUrl = () => {
       const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
       const img2 = new Image();
       img2.decoding = "async";
-      img2.onload = () => resolve(img2);
+      img2.onload = () => finish(img2);
       img2.onerror = () => resolve(null);
       img2.src = dataUrl;
     };
@@ -51,7 +67,11 @@ function loadImageFromSvgSources(svg: string): Promise<HTMLImageElement | null> 
     img.decoding = "async";
     img.onload = () => {
       URL.revokeObjectURL(blobUrl);
-      resolve(img);
+      if (isDrawableSvgImage(img)) {
+        resolve(img);
+        return;
+      }
+      tryDataUrl();
     };
     img.onerror = () => {
       URL.revokeObjectURL(blobUrl);
@@ -108,6 +128,12 @@ export async function rasterizeSvgToCanvas(
     const stripped = stripPrContentSvgFilter(svg);
     if (stripped !== svg) {
       canvas = await run(stripped);
+    }
+    if (!canvas) {
+      const bare = stripSvgFilterElements(svg);
+      if (bare !== svg && bare !== stripped) {
+        canvas = await run(bare);
+      }
     }
   }
 

@@ -6,10 +6,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PDF_FONT_OPTIONS } from "@/lib/pdf-page-types";
+import { useUiLocale } from "@/contexts/ui-locale-context";
 import { useProjectStore } from "@/store/use-project-store";
 import { useResolvedSourcePageIndex } from "@/hooks/use-resolved-source-page-index";
 
 export function SvgTextEditorPanel() {
+  const { copy, locale } = useUiLocale();
+  const isZh = locale === "zh";
+  const e = copy.svgEditor;
+
   const svgPageLayers = useProjectStore((s) => s.svgPageLayers);
   const sourcePageIndex = useResolvedSourcePageIndex();
   const updateSvgTextItem = useProjectStore((s) => s.updateSvgTextItem);
@@ -35,17 +40,13 @@ export function SvgTextEditorPanel() {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Type className="size-4" />
-          本頁 SVG 文字
+          {e.title}
         </CardTitle>
-        <CardDescription>
-          僅支援 SVG 向量 text 節點；路徑描字或純圖片請在外部編輯。修改內容後在輸入框外點一下即更新預覽；字體類型變更會立即生效。
-        </CardDescription>
+        <CardDescription>{e.desc}</CardDescription>
       </CardHeader>
       <CardContent>
         {page.texts.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            此頁未偵測到可編輯的向量文字節點。
-          </p>
+          <p className="text-sm text-muted-foreground">{e.empty}</p>
         ) : (
           <ul className="max-h-[min(420px,50vh)] space-y-4 overflow-y-auto pr-1">
             {page.texts.map((t, idx) => (
@@ -55,7 +56,7 @@ export function SvgTextEditorPanel() {
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="text-xs font-medium text-muted-foreground">
-                    區塊 {idx + 1}
+                    {e.block(idx + 1)}
                     {t.sourceFontFamily ? (
                       <span className="ml-1 font-normal opacity-80">
                         · {t.sourceFontFamily.slice(0, 40)}
@@ -64,7 +65,7 @@ export function SvgTextEditorPanel() {
                   </span>
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs">文字內容</Label>
+                  <Label className="text-xs">{e.content}</Label>
                   <Input
                     value={drafts[t.id] ?? t.content}
                     onChange={(e) =>
@@ -81,7 +82,7 @@ export function SvgTextEditorPanel() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs">字體類型</Label>
+                  <Label className="text-xs">{e.font}</Label>
                   <select
                     className="flex h-9 w-full rounded-md border border-border bg-card px-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                     value={t.fontKey}
@@ -93,7 +94,7 @@ export function SvgTextEditorPanel() {
                   >
                     {PDF_FONT_OPTIONS.map((f) => (
                       <option key={f.id} value={f.id}>
-                        {f.label}
+                        {isZh ? f.labelZh : f.labelEn}
                       </option>
                     ))}
                   </select>

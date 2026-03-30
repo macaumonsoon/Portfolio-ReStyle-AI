@@ -6,10 +6,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PDF_FONT_OPTIONS } from "@/lib/pdf-page-types";
+import { useUiLocale } from "@/contexts/ui-locale-context";
 import { useProjectStore } from "@/store/use-project-store";
 import { useResolvedSourcePageIndex } from "@/hooks/use-resolved-source-page-index";
 
 export function PdfTextEditorPanel() {
+  const { copy, locale } = useUiLocale();
+  const isZh = locale === "zh";
+  const e = copy.pdfEditor;
+
   const pdfPagesData = useProjectStore((s) => s.pdfPagesData);
   const sourcePageIndex = useResolvedSourcePageIndex();
   const updatePdfTextItem = useProjectStore((s) => s.updatePdfTextItem);
@@ -36,17 +41,13 @@ export function PdfTextEditorPanel() {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Type className="size-4" />
-          本頁 PDF 文字
+          {e.title}
         </CardTitle>
-        <CardDescription>
-          修改內容後在輸入框外點一下（失焦）即更新預覽；字體類型變更會立即生效。白塊會遮蓋底圖上的原字，再以向量字重繪（複雜版面可能需微調位置，正式版可接精準 OCR）。
-        </CardDescription>
+        <CardDescription>{e.desc}</CardDescription>
       </CardHeader>
       <CardContent>
         {page.texts.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            此頁未偵測到可選取文字（可能為純圖片 PDF）。
-          </p>
+          <p className="text-sm text-muted-foreground">{e.empty}</p>
         ) : (
           <ul className="max-h-[min(420px,50vh)] space-y-4 overflow-y-auto pr-1">
             {page.texts.map((t, idx) => (
@@ -56,7 +57,7 @@ export function PdfTextEditorPanel() {
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="text-xs font-medium text-muted-foreground">
-                    區塊 {idx + 1}
+                    {e.block(idx + 1)}
                     {t.pdfFontName ? (
                       <span className="ml-1 font-normal opacity-80">
                         · {t.pdfFontName.slice(0, 32)}
@@ -65,7 +66,7 @@ export function PdfTextEditorPanel() {
                   </span>
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs">文字內容</Label>
+                  <Label className="text-xs">{e.content}</Label>
                   <Input
                     value={drafts[t.id] ?? t.content}
                     onChange={(e) =>
@@ -82,7 +83,7 @@ export function PdfTextEditorPanel() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs">字體類型</Label>
+                  <Label className="text-xs">{e.font}</Label>
                   <select
                     className="flex h-9 w-full rounded-md border border-border bg-card px-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                     value={t.fontKey}
@@ -94,7 +95,7 @@ export function PdfTextEditorPanel() {
                   >
                     {PDF_FONT_OPTIONS.map((f) => (
                       <option key={f.id} value={f.id}>
-                        {f.label}
+                        {isZh ? f.labelZh : f.labelEn}
                       </option>
                     ))}
                   </select>
