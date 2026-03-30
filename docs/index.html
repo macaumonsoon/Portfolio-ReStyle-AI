@@ -86,6 +86,8 @@
     }
 
     .hero {
+      position: relative;
+      z-index: 20;
       border: 1px solid var(--line);
       border-radius: 24px;
       background: var(--glass-strong);
@@ -145,7 +147,49 @@
       border-color: var(--line);
     }
 
+    .download-menu {
+      position: relative;
+      display: inline-block;
+    }
+
+    .download-options {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      min-width: 220px;
+      padding: 8px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px) saturate(1.1);
+      -webkit-backdrop-filter: blur(8px) saturate(1.1);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+      display: none;
+      z-index: 999;
+    }
+
+    .download-menu.open .download-options {
+      display: block;
+    }
+
+    .download-options a {
+      display: block;
+      text-decoration: none;
+      color: #334155;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 10px;
+      border-radius: 8px;
+    }
+
+    .download-options a:hover {
+      background: rgba(99, 102, 241, 0.1);
+      color: #312e81;
+    }
+
     .grid {
+      position: relative;
+      z-index: 1;
       margin-top: 14px;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -244,10 +288,22 @@
           <span class="en-only">Open PDF Preview -&gt;</span>
           <span class="zh-only">開啟 PDF 預覽 -&gt;</span>
         </a>
-        <a class="btn secondary" href="https://github.com/macaumonsoon/Portfolio-ReStyle-AI/releases/download/presentation-deck-2026-03-30/Portfolio-ReStyle-AI-Design-Deck.pptx" target="_blank" rel="noreferrer">
-          <span class="en-only">Download PPTX Deck</span>
-          <span class="zh-only">下載 PPTX 簡報</span>
-        </a>
+        <div class="download-menu" id="download-menu">
+          <button class="btn secondary" id="download-toggle" type="button">
+            <span class="en-only">Download PDF / PPTX</span>
+            <span class="zh-only">下載 PDF / PPTX</span>
+          </button>
+          <div class="download-options" id="download-options">
+            <a href="https://github.com/macaumonsoon/Portfolio-ReStyle-AI/releases/download/presentation-deck-2026-03-30/Portfolio-ReStyle-AI-Design-Deck.pdf">
+              <span class="en-only">Download PDF</span>
+              <span class="zh-only">下載 PDF</span>
+            </a>
+            <a href="https://github.com/macaumonsoon/Portfolio-ReStyle-AI/releases/download/presentation-deck-2026-03-30/Portfolio-ReStyle-AI-Design-Deck.pptx">
+              <span class="en-only">Download PPTX</span>
+              <span class="zh-only">下載 PPTX</span>
+            </a>
+          </div>
+        </div>
         <a class="btn secondary" href="https://github.com/macaumonsoon/Portfolio-ReStyle-AI/blob/main/presentation/PRESENTATION_SOURCE.md" target="_blank" rel="noreferrer">
           <span class="en-only">Read Full Markdown Notes</span>
           <span class="zh-only">查看完整 Markdown 說明</span>
@@ -362,6 +418,8 @@
   <script>
     const btnEn = document.getElementById("btn-en");
     const btnZh = document.getElementById("btn-zh");
+    const downloadMenu = document.getElementById("download-menu");
+    const downloadToggle = document.getElementById("download-toggle");
 
     function setLang(lang) {
       document.body.dataset.lang = lang;
@@ -373,6 +431,14 @@
 
     btnEn.addEventListener("click", () => setLang("en"));
     btnZh.addEventListener("click", () => setLang("zh"));
+    downloadToggle.addEventListener("click", () => {
+      downloadMenu.classList.toggle("open");
+    });
+    document.addEventListener("click", (event) => {
+      if (!downloadMenu.contains(event.target)) {
+        downloadMenu.classList.remove("open");
+      }
+    });
 
     const saved = localStorage.getItem("prsa-pages-lang");
     setLang(saved === "zh" ? "zh" : "en");
