@@ -129,12 +129,18 @@ async function main() {
   );
   s2.addText(
     [
-      { text: "Portfolios are narrative + craft—not only pretty pictures.", options: bodyStyle() },
-      { text: "作品集是敘事與工藝，不只是漂亮畫面。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "Restructuring order, grid, and tone is repetitive; it steals time from concept work.", options: bodyStyle() },
-      { text: "重排順序、網格、色調很耗時，擠壓概念發想時間。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "We need a tool that assists without replacing designer judgment.", options: bodyStyle() },
-      { text: "需要「輔助」設計師判斷的工具，而非取代。", options: { ...bodyStyle(), fontSize: 15 } },
+      {
+        text: "Portfolios are narrative + craft—not only pretty pictures. / 作品集是敘事與工藝，不只是漂亮畫面。",
+        options: bodyStyle(),
+      },
+      {
+        text: "Restructuring order, grid, and tone is repetitive; it steals time from concept work. / 重排順序、網格、色調很耗時，擠壓概念發想時間。",
+        options: { ...bodyStyle(), fontSize: 15 },
+      },
+      {
+        text: "We need a tool that assists without replacing designer judgment. / 需要「輔助」設計師判斷的工具，而非取代。",
+        options: { ...bodyStyle(), fontSize: 15 },
+      },
     ],
     { x: 0.6, y: 1.75, w: 8.8, h: 3.8 },
   );
@@ -143,12 +149,18 @@ async function main() {
   const s3 = slideTitle(pptx, "Concept 核心概念", "Re-interpret, don’t replace");
   s3.addText(
     [
-      { text: "Re-interpret SVG/PDF with clear intent: palette, style, canvas, narrative order.", options: bodyStyle() },
-      { text: "以色系、風格、畫布、敘事順序重新詮釋既有稿件。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "Three variants per page → designer chooses (studio critique loop).", options: bodyStyle() },
-      { text: "每頁三種版本 → 設計師選擇，貼近工作室評圖流程。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "Export SVG (edit further) or merged PDF (share / print).", options: bodyStyle() },
-      { text: "匯出向量 SVG 或合併 PDF，便於再編輯與交付。", options: { ...bodyStyle(), fontSize: 15 } },
+      {
+        text: "Re-interpret SVG/PDF with clear intent: palette, style, canvas, narrative order. / 以色系、風格、畫布、敘事順序重新詮釋既有稿件。",
+        options: bodyStyle(),
+      },
+      {
+        text: "Three variants per page → designer chooses (studio critique loop). / 每頁三種版本 → 設計師選擇，貼近工作室評圖流程。",
+        options: { ...bodyStyle(), fontSize: 15 },
+      },
+      {
+        text: "Export SVG (edit further) or merged PDF (share / print). / 匯出向量 SVG 或合併 PDF，便於再編輯與交付。",
+        options: { ...bodyStyle(), fontSize: 15 },
+      },
     ],
     { x: 0.6, y: 1.75, w: 8.8, h: 3.8 },
   );
@@ -170,11 +182,27 @@ async function main() {
   sFlowUpload.addText(
     [
       { text: "Upload 上傳", options: { bold: true, fontSize: 16, color: SLATE } },
-      { text: "• SVG：直接導入並分頁", options: { fontSize: 14, color: SLATE } },
-      { text: "• PDF：pdf.js 逐頁渲染，抽取文字座標（可在 Pages 編輯文字）", options: { fontSize: 14, color: SLATE } },
-      { text: "目標：把作品轉成可重排、可選擇的結構。", options: { fontSize: 14, color: SLATE } },
+      {
+        text: "• SVG：直接導入並分頁 (SVG import & page split)",
+        options: { fontSize: 13, color: SLATE },
+      },
+      {
+        text: "• PDF：pdf.js 逐頁渲染 + 抽取文字座標 (render & extract text coords)",
+        options: { fontSize: 13, color: SLATE },
+      },
+      {
+        text: "目標：可重排、可選擇的結構 (structure for remix)",
+        options: { fontSize: 13, color: SLATE },
+      },
     ],
-    { x: 0.55, y: 1.7, w: 4.65, h: 5.2, lineSpacingMultiple: 1.07, fontFace: FONT_PRIMARY },
+    {
+      x: 0.55,
+      y: 1.7,
+      w: 4.65,
+      h: 5.2,
+      lineSpacingMultiple: 1.05,
+      fontFace: FONT_PRIMARY,
+    },
   );
 
   // --- Slide 5: UX Flow — Options ---
@@ -194,12 +222,31 @@ async function main() {
   sFlowOptions.addText(
     [
       { text: "Options 選項", options: { bold: true, fontSize: 16, color: SLATE } },
-      { text: "• 色系 + 風格關鍵詞：即時濾鏡/字色方向", options: { fontSize: 14, color: SLATE } },
-      { text: "• 畫布尺寸 + 敘事邏輯：影響版面比例與頁序", options: { fontSize: 14, color: SLATE } },
-      { text: "• 可選網格重排 + 網格塊微調：拖曳寫入讓構圖可控", options: { fontSize: 14, color: SLATE } },
-      { text: "目標：讓設計方向可視化、可比較、可迭代。", options: { fontSize: 14, color: SLATE } },
+      {
+        text: "• 色系 + 風格關鍵詞：即時濾鏡/字色方向 (live palette/style filters)",
+        options: { fontSize: 13, color: SLATE },
+      },
+      {
+        text: "• 畫布尺寸 + 敘事邏輯：影響比例與頁序 (canvas & narrative ordering)",
+        options: { fontSize: 13, color: SLATE },
+      },
+      {
+        text: "• 網格重排 + tile 微調：拖曳寫入構圖 (grid remix + tile nudge)",
+        options: { fontSize: 13, color: SLATE },
+      },
+      {
+        text: "目標：可視化方向、可比較、可迭代 (visual, compare, iterate)",
+        options: { fontSize: 13, color: SLATE },
+      },
     ],
-    { x: 0.55, y: 1.7, w: 4.65, h: 5.2, lineSpacingMultiple: 1.07, fontFace: FONT_PRIMARY },
+    {
+      x: 0.55,
+      y: 1.7,
+      w: 4.65,
+      h: 5.2,
+      lineSpacingMultiple: 1.05,
+      fontFace: FONT_PRIMARY,
+    },
   );
 
   // --- Slide 6: UX Flow — Pages ×3 ---
@@ -219,12 +266,31 @@ async function main() {
   sFlowPages.addText(
     [
       { text: "Pages 頁面×3", options: { bold: true, fontSize: 16, color: SLATE } },
-      { text: "• 每頁 3 個版本：先快速比對，再鎖定喜歡的構圖", options: { fontSize: 14, color: SLATE } },
-      { text: "• Before/After：分開看色相（顏色）與位移（版式/構圖）", options: { fontSize: 14, color: SLATE } },
-      { text: "• 支援 WebGL/2D 預覽：用同一套 SVG 來源保持一致", options: { fontSize: 14, color: SLATE } },
-      { text: "目標：降低決策成本，加速版式定稿。", options: { fontSize: 14, color: SLATE } },
+      {
+        text: "• 每頁 3 版本：快速比對，再鎖定構圖 (3 variants per page)",
+        options: { fontSize: 13, color: SLATE },
+      },
+      {
+        text: "• Before/After：分開看顏色與版式位移 (separate color vs layout)",
+        options: { fontSize: 13, color: SLATE },
+      },
+      {
+        text: "• WebGL/2D 預覽：同一套 SVG 來源 (consistent SVG preview)",
+        options: { fontSize: 13, color: SLATE },
+      },
+      {
+        text: "目標：降低決策成本、加速定稿 (faster decisions)",
+        options: { fontSize: 13, color: SLATE },
+      },
     ],
-    { x: 0.55, y: 1.7, w: 4.65, h: 5.2, lineSpacingMultiple: 1.07, fontFace: FONT_PRIMARY },
+    {
+      x: 0.55,
+      y: 1.7,
+      w: 4.65,
+      h: 5.2,
+      lineSpacingMultiple: 1.05,
+      fontFace: FONT_PRIMARY,
+    },
   );
 
   // --- Slide 7: UX Flow — Export ---
@@ -244,12 +310,31 @@ async function main() {
   sFlowExport.addText(
     [
       { text: "Export 匯出", options: { bold: true, fontSize: 16, color: SLATE } },
-      { text: "• 下載合併 PDF：適合分享與列印", options: { fontSize: 14, color: SLATE } },
-      { text: "• 下載每頁 SVG：給 Figma/編輯器繼續精修", options: { fontSize: 14, color: SLATE } },
-      { text: "• 匯出保留所選版本設定（包含網格重排/塊微調）。", options: { fontSize: 14, color: SLATE } },
-      { text: "目標：把探索結果轉成可交付的設計稿。", options: { fontSize: 14, color: SLATE } },
+      {
+        text: "• 下載合併 PDF：分享/列印用 (merged PDF for share/print)",
+        options: { fontSize: 13, color: SLATE },
+      },
+      {
+        text: "• 下載每頁 SVG：給 Figma/編輯器精修 (per-page SVG for refinement)",
+        options: { fontSize: 13, color: SLATE },
+      },
+      {
+        text: "• 保留所選版本设置：含網格重排/微調 (keeps chosen settings)",
+        options: { fontSize: 13, color: SLATE },
+      },
+      {
+        text: "目標：輸出可交付設計稿 (deliverable output)",
+        options: { fontSize: 13, color: SLATE },
+      },
     ],
-    { x: 0.55, y: 1.7, w: 4.65, h: 5.2, lineSpacingMultiple: 1.07, fontFace: FONT_PRIMARY },
+    {
+      x: 0.55,
+      y: 1.7,
+      w: 4.65,
+      h: 5.2,
+      lineSpacingMultiple: 1.05,
+      fontFace: FONT_PRIMARY,
+    },
   );
 
   // --- Slide 8: Design thinking (process) ---
@@ -257,24 +342,24 @@ async function main() {
   // Reduce to fewer, denser bullets so text never overflows the slide height.
   const thinkingBullets = [
     {
-      text: "Empathize 同理：repetitive layout work (order/grid/spacing) steals time → designer stays in control.",
-      options: { ...bodyStyle(), fontSize: 14, lineSpacingMultiple: 1.08 },
+      text: "Empathize: repetitive layout work (order/grid/spacing) steals time → designer stays in control. / 同理：重复的版面排版（页序/网格/字距）会占用时间 → 设计师保持掌控。",
+      options: { ...bodyStyle(), fontSize: 13, lineSpacingMultiple: 1.06 },
     },
     {
-      text: "Define 定義：assist decisions, not replace authorship — keep authorship and taste.",
-      options: { ...bodyStyle(), fontSize: 14, lineSpacingMultiple: 1.08 },
+      text: "Define: assist decisions, not replace authorship — keep authorship and taste. / 定义：辅助决策而非取代创作权——保留创作主导与审美品味。",
+      options: { ...bodyStyle(), fontSize: 13, lineSpacingMultiple: 1.06 },
     },
     {
-      text: "Ideate 發想：wizard + persistent dock + only 3 variants per page → faster comparison.",
-      options: { ...bodyStyle(), fontSize: 14, lineSpacingMultiple: 1.08 },
+      text: "Ideate: wizard + persistent dock + only 3 variants per page → faster comparison. / 发想：精灵流程 + 持续侧栏预览 + 每页仅 3 个版本 → 更快对比。",
+      options: { ...bodyStyle(), fontSize: 13, lineSpacingMultiple: 1.06 },
     },
     {
-      text: "Prototype 原型：bilingual UI + grid remix + tile nudge + before/after compare for readability.",
-      options: { ...bodyStyle(), fontSize: 14, lineSpacingMultiple: 1.08 },
+      text: "Prototype: bilingual UI + grid remix + tile nudge + before/after compare for readability. / 原型：双语界面 + 网格重排 + tile 微调 + Before/After 对比，用于提升可读性。",
+      options: { ...bodyStyle(), fontSize: 13, lineSpacingMultiple: 1.06 },
     },
     {
-      text: "Test 測試：synchronize previews across steps and keep typography hierarchy stable (e.g. 1×2 grids).",
-      options: { ...bodyStyle(), fontSize: 14, lineSpacingMultiple: 1.08 },
+      text: "Test: synchronize previews across steps and keep typography hierarchy stable (e.g. 1×2 grids). / 测试：各步骤预览保持同步，并确保字体现层级稳定（例如 1×2 网格）。",
+      options: { ...bodyStyle(), fontSize: 13, lineSpacingMultiple: 1.06 },
     },
   ];
   s5.addText(thinkingBullets, {
@@ -297,23 +382,23 @@ async function main() {
     ],
     [
       { text: "Whitespace 留白", options: { fontSize: 12 } },
-      { text: "Cards use padding + gap; dock preview keeps focus.", options: { fontSize: 12 } },
+      { text: "Cards use padding + gap; dock preview keeps focus. / 卡片使用 padding + gap；dock 預覽保持焦點。", options: { fontSize: 12 } },
     ],
     [
       { text: "Visual hierarchy 視覺層級", options: { fontSize: 12 } },
-      { text: "Purple titles + muted body; consistent left alignment.", options: { fontSize: 12 } },
+      { text: "Purple titles + muted body; consistent left alignment. / 紫色標題 + 低飽和正文；左對齊一致。", options: { fontSize: 12 } },
     ],
     [
       { text: "Grid as sketch tool 網格即草圖", options: { fontSize: 12 } },
-      { text: "2×2 / 1×2 / 2×1 presets + tile nudge for composition iteration.", options: { fontSize: 12 } },
+      { text: "2×2 / 1×2 / 2×1 presets + tile nudge for iteration. / 2×2 / 1×2 / 2×1 預設 + tile nudge 迭代構圖。", options: { fontSize: 12 } },
     ],
     [
       { text: "Color contrast 對比與可讀性", options: { fontSize: 12 } },
-      { text: "Before/After modes separate hue vs layout for decision confidence.", options: { fontSize: 12 } },
+      { text: "Before/After separates hue vs layout for confident decisions. / Before/After 分開看色相 vs 版式，提升決策信心。", options: { fontSize: 12 } },
     ],
     [
       { text: "Bilingual clarity 雙語清晰", options: { fontSize: 12 } },
-      { text: "Language toggle with persistent preference via localStorage.", options: { fontSize: 12 } },
+      { text: "Language toggle with persistent preference via localStorage. / 語言切換透過 localStorage 記住偏好。", options: { fontSize: 12 } },
     ],
   ];
   s6.addTable(tableRows, {
@@ -336,11 +421,11 @@ async function main() {
     sizing: { type: "contain", w: 4.7, h: 2.65 },
   });
   const demoText = [
-    "1. Show language toggle（中文 ↔ English）。",
-    "2. Upload SVG/PDF：在 Options dock 改色系/风格/网格并观察层级变化。",
-    "3. Use Before/After：分开看色相滤镜 vs 版式位移。",
-    "4. Select one variant per page（含 1×2 / 2×1 非对称预设）。",
-    "5. Export：合并 PDF + 每页 SVG（方便继续排版与微调）。",
+    "1. Show language toggle（中文 ↔ English）。/ 展示雙語切換（中文 ↔ English）。",
+    "2. Upload SVG/PDF and change palette/style/grid in the Options dock. / 上傳 SVG/PDF 並在 Options dock 改色系/風格/網格。",
+    "3. Use Before/After to separate hue decisions from layout decisions. / 使用 Before/After 分開看色相決策與版式決策。",
+    "4. Select one variant per page (including 1×2 / 2×1 asymmetric presets). / 每頁選一個版本（含 1×2 / 2×1 非對稱預設）。",
+    "5. Export merged PDF + per-page SVG for further refinement. / 匯出合併 PDF + 每頁 SVG 供後續精修。",
   ].join("\n");
   s7.addText(demoText, {
     x: 0.55,
@@ -358,12 +443,18 @@ async function main() {
   const s8 = slideTitle(pptx, "Reflection 反思", "Design focus · Next steps");
   s8.addText(
     [
-      { text: "What worked: clear type hierarchy + stable dock preview for confident decisions.", options: bodyStyle() },
-      { text: "有效之處：清晰字體層級 + 穩定 dock 預覽，讓決策更有把握。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "What to improve: finer typography controls and more layout-ready components.", options: bodyStyle() },
-      { text: "接續改進：更細字體控制與更多可直接用的版面元件。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "Ethics: API keys only in .env.local; no training on user uploads in this prototype.", options: bodyStyle() },
-      { text: "倫理：API 金鑰只在本機；此原型不對用戶上傳做訓練。", options: { ...bodyStyle(), fontSize: 15 } },
+      {
+        text: "What worked: clear type hierarchy + stable dock preview for confident decisions. / 有效之處：清晰字體層級 + 穩定 dock 預覽，讓決策更有把握。",
+        options: bodyStyle(),
+      },
+      {
+        text: "What to improve: finer typography controls and more layout-ready components. / 接續改進：更細字體控制與更多可直接用的版面元件。",
+        options: { ...bodyStyle(), fontSize: 15 },
+      },
+      {
+        text: "Ethics: API keys only in .env.local; no training on user uploads in this prototype. / 倫理：API 金鑰只在本機；此原型不對用戶上傳做訓練。",
+        options: { ...bodyStyle(), fontSize: 15 },
+      },
     ],
     { x: SAFE_MARGIN_L, y: 1.75, w: 8.8, h: 3.8 },
   );
@@ -372,10 +463,22 @@ async function main() {
   const s9 = slideTitle(pptx, "Appendix: Tech 技術附錄", "Brief — grading focus stays on design");
   s9.addText(
     [
-      { text: "Stack: Next.js, Tailwind, Zustand; optional Gemini for copy / vision / order.", options: bodyStyle() },
-      { text: "API: Google AI Studio https://aistudio.google.com/apikey", options: bodyStyle() },
-      { text: "Docs: https://ai.google.dev/gemini-api/docs", options: bodyStyle() },
-      { text: "Repo: github.com/macaumonsoon/Portfolio-ReStyle-AI", options: bodyStyle() },
+      {
+        text: "Stack: Next.js, Tailwind, Zustand; optional Gemini for copy / vision / order. / 技術：Next.js、Tailwind、Zustand；可選 Gemini 用於文案/視覺/排序。",
+        options: bodyStyle(),
+      },
+      {
+        text: "API: Google AI Studio https://aistudio.google.com/apikey / API：Google AI Studio（https://aistudio.google.com/apikey）",
+        options: bodyStyle(),
+      },
+      {
+        text: "Docs: https://ai.google.dev/gemini-api/docs / 文件：https://ai.google.dev/gemini-api/docs",
+        options: bodyStyle(),
+      },
+      {
+        text: "Repo: github.com/macaumonsoon/Portfolio-ReStyle-AI / 專案程式庫：https://github.com/macaumonsoon/Portfolio-ReStyle-AI",
+        options: bodyStyle(),
+      },
     ],
     { x: 0.6, y: 1.75, w: 8.8, h: 3.2 },
   );
