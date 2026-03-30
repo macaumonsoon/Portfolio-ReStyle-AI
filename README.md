@@ -2,7 +2,7 @@
 
 **AI-assisted portfolio layout lab** — upload SVG or PDF, choose palette, style keywords, canvas, and optional grid remix; preview three variants per page, then export SVG or merged PDF.
 
-**Course assignment deliverables** (see sections below): repo on `main`, bilingual app, README with API docs link (no keys), group roster, presentation links, GitHub Pages.
+This repository includes the app source, presentation assets, and deployment notes for showcasing the project.
 
 ---
 
@@ -50,7 +50,7 @@ The video should demonstrate the app working and reference your slide deck (desi
 
 ## Group members
 
-Edit this table before submission (English name, Chinese name, student ID).
+Project contributors (English name, Chinese name, student ID).
 
 | English name | 中文姓名 | Student ID |
 |--------------|----------|------------|
@@ -103,14 +103,3 @@ AI helpers (brief expansion, style recommendation, smart page order) need an API
 | `docs/` | **GitHub Pages** static site (presentation summary) |
 | `presentation/PRESENTATION_SOURCE.md` | Markdown source for slides / further editing in Cursor |
 
----
-
-## License / academic use
-
-This repository is submitted for coursework. Respect your institution’s plagiarism and attribution rules.
-
----
-
-## Due reminder
-
-Per assignment: **1 April 2026, 10:00** — confirm GitHub `main`, README links, video URL, and Pages deployment before the deadline.
