@@ -18,8 +18,10 @@ const SAFE_MARGIN_L = 0.6; // slide safe left margin (in PPT units)
 // Screenshots (used for function explanation slides)
 const IMG_OPTIONS_DOCK =
   "/Users/guoxiaoyue/.cursor/projects/Users-guoxiaoyue-Downloads-cursor-Portfolio-ReStyle-AI/assets/__2026-03-30_15.46.38-49fcc9cf-c541-460f-b822-e381967fc6bf.png";
-const IMG_OPTIONS_GRID =
-  "/Users/guoxiaoyue/.cursor/projects/Users-guoxiaoyue-Downloads-cursor-Portfolio-ReStyle-AI/assets/__2026-03-30_15.46.25-614732c6-5924-43fb-88f9-746a1dc6626e.png";
+const IMG_GRID_PRESETS =
+  "/Users/guoxiaoyue/.cursor/projects/Users-guoxiaoyue-Downloads-cursor-Portfolio-ReStyle-AI/assets/__2026-03-30_15.38.54-735dd999-a21b-4719-af36-9994ea7d2a6c.png";
+const IMG_EXPORT_STEP =
+  "/Users/guoxiaoyue/.cursor/projects/Users-guoxiaoyue-Downloads-cursor-Portfolio-ReStyle-AI/assets/__2026-03-30_15.15.55-596f6acd-3360-49c6-8675-49394d0372f5.png";
 
 function titleStyle() {
   return {
@@ -151,36 +153,106 @@ async function main() {
     { x: 0.6, y: 1.75, w: 8.8, h: 3.8 },
   );
 
-  // --- Slide 4: VCD role ---
-  const s4 = slideTitle(
+  // --- Slide 4: UX Flow — Upload ---
+  const sFlowUpload = slideTitle(
     pptx,
-    "In visual communication 在視傳流程中",
-    "How designers can use this tool",
+    "UX Flow 1 上傳導入",
+    "Upload / PDF import",
   );
-  // Right side screenshot: show dock preview + option controls
-  s4.addImage({
-    path: IMG_OPTIONS_DOCK,
-    x: 5.35,
-    y: 1.8,
-    w: 4.35,
-    h: 2.7,
+  sFlowUpload.addImage({
+    path: IMG_EXPORT_STEP,
+    x: 5.25,
+    y: 1.65,
+    w: 4.7,
+    h: 5.1,
+    sizing: { type: "contain", w: 4.7, h: 5.1 },
   });
-  s4.addText(
+  sFlowUpload.addText(
     [
-      { text: "Direction exploration: color + style with immediate preview feedback.", options: bodyStyle() },
-      { text: "方向探索：色彩與風格搭配，即時預覽回饋。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "Layout sketching: grid remix + optional tile nudge.", options: bodyStyle() },
-      { text: "版面草圖：網格重排與區塊微調。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "Presentation packaging: reorder pages, unified look for different audiences.", options: bodyStyle() },
-      { text: "展示包裝：調整頁序與整體視覺，面向不同觀眾。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "Workflow: Upload → set intent (palette/style/canvas/narrative/grid) → review per page → choose variant → export SVG/PDF.", options: bodyStyle() },
-      { text: "流程：上傳 → 設定意圖（色系/風格/畫布/敘事/網格）→ 逐頁審閱 → 選擇版本 → 匯出 SVG/PDF。", options: { ...bodyStyle(), fontSize: 15 } },
+      { text: "Upload 上傳", options: { bold: true, fontSize: 16, color: SLATE } },
+      { text: "• SVG：直接導入並分頁", options: { fontSize: 14, color: SLATE } },
+      { text: "• PDF：pdf.js 逐頁渲染，抽取文字座標（可在 Pages 編輯文字）", options: { fontSize: 14, color: SLATE } },
+      { text: "目標：把作品轉成可重排、可選擇的結構。", options: { fontSize: 14, color: SLATE } },
     ],
-    // Keep text width on the left so it won't collide with the screenshot
-    { x: 0.6, y: 1.75, w: 4.7, h: 4.2 },
+    { x: 0.55, y: 1.7, w: 4.65, h: 5.2, lineSpacingMultiple: 1.07, fontFace: FONT_PRIMARY },
   );
 
-  // --- Slide 5: Design thinking (process) ---
+  // --- Slide 5: UX Flow — Options ---
+  const sFlowOptions = slideTitle(
+    pptx,
+    "UX Flow 2 選項 Options",
+    "Palette / Style / Canvas / Narrative / Grid",
+  );
+  sFlowOptions.addImage({
+    path: IMG_OPTIONS_DOCK,
+    x: 5.25,
+    y: 1.65,
+    w: 4.7,
+    h: 5.1,
+    sizing: { type: "contain", w: 4.7, h: 5.1 },
+  });
+  sFlowOptions.addText(
+    [
+      { text: "Options 選項", options: { bold: true, fontSize: 16, color: SLATE } },
+      { text: "• 色系 + 風格關鍵詞：即時濾鏡/字色方向", options: { fontSize: 14, color: SLATE } },
+      { text: "• 畫布尺寸 + 敘事邏輯：影響版面比例與頁序", options: { fontSize: 14, color: SLATE } },
+      { text: "• 可選網格重排 + 網格塊微調：拖曳寫入讓構圖可控", options: { fontSize: 14, color: SLATE } },
+      { text: "目標：讓設計方向可視化、可比較、可迭代。", options: { fontSize: 14, color: SLATE } },
+    ],
+    { x: 0.55, y: 1.7, w: 4.65, h: 5.2, lineSpacingMultiple: 1.07, fontFace: FONT_PRIMARY },
+  );
+
+  // --- Slide 6: UX Flow — Pages ×3 ---
+  const sFlowPages = slideTitle(
+    pptx,
+    "UX Flow 3 頁面 Pages ×3",
+    "Choose a variant per page",
+  );
+  sFlowPages.addImage({
+    path: IMG_EXPORT_STEP,
+    x: 5.25,
+    y: 1.65,
+    w: 4.7,
+    h: 5.1,
+    sizing: { type: "contain", w: 4.7, h: 5.1 },
+  });
+  sFlowPages.addText(
+    [
+      { text: "Pages 頁面×3", options: { bold: true, fontSize: 16, color: SLATE } },
+      { text: "• 每頁 3 個版本：先快速比對，再鎖定喜歡的構圖", options: { fontSize: 14, color: SLATE } },
+      { text: "• Before/After：分開看色相（顏色）與位移（版式/構圖）", options: { fontSize: 14, color: SLATE } },
+      { text: "• 支援 WebGL/2D 預覽：用同一套 SVG 來源保持一致", options: { fontSize: 14, color: SLATE } },
+      { text: "目標：降低決策成本，加速版式定稿。", options: { fontSize: 14, color: SLATE } },
+    ],
+    { x: 0.55, y: 1.7, w: 4.65, h: 5.2, lineSpacingMultiple: 1.07, fontFace: FONT_PRIMARY },
+  );
+
+  // --- Slide 7: UX Flow — Export ---
+  const sFlowExport = slideTitle(
+    pptx,
+    "UX Flow 4 匯出 Export",
+    "Deliverables: PDF / SVG",
+  );
+  sFlowExport.addImage({
+    path: IMG_EXPORT_STEP,
+    x: 5.25,
+    y: 1.65,
+    w: 4.7,
+    h: 5.1,
+    sizing: { type: "contain", w: 4.7, h: 5.1 },
+  });
+  sFlowExport.addText(
+    [
+      { text: "Export 匯出", options: { bold: true, fontSize: 16, color: SLATE } },
+      { text: "• 下載合併 PDF：適合分享與列印", options: { fontSize: 14, color: SLATE } },
+      { text: "• 下載每頁 SVG：給 Figma/編輯器繼續精修", options: { fontSize: 14, color: SLATE } },
+      { text: "• 匯出保留所選版本設定（包含網格重排/塊微調）。", options: { fontSize: 14, color: SLATE } },
+      { text: "目標：把探索結果轉成可交付的設計稿。", options: { fontSize: 14, color: SLATE } },
+    ],
+    { x: 0.55, y: 1.7, w: 4.65, h: 5.2, lineSpacingMultiple: 1.07, fontFace: FONT_PRIMARY },
+  );
+
+  // --- Slide 8: Design thinking (process) ---
   const s5 = slideTitle(pptx, "Design thinking 設計思維", "From layout pain → clear workflow");
   // Reduce to fewer, denser bullets so text never overflows the slide height.
   const thinkingBullets = [
@@ -256,23 +328,31 @@ async function main() {
   // --- Slide 7: Demo (visual-focused) ---
   const s7 = slideTitle(pptx, "Demo script 演示腳本", "For your screen recording / video");
   s7.addImage({
-    path: IMG_OPTIONS_GRID,
-    x: 5.35,
-    y: 1.8,
-    w: 4.35,
-    h: 2.7,
+    path: IMG_GRID_PRESETS,
+    x: 5.25,
+    y: 1.65,
+    w: 4.7,
+    h: 2.65,
+    sizing: { type: "contain", w: 4.7, h: 2.65 },
   });
-  s7.addText(
-    [
-      { text: "Show bilingual toggle (中文 ↔ English).", options: bodyStyle() },
-      { text: "Upload SVG/PDF → in the dock, change palette/style/grid and watch hierarchy update.", options: bodyStyle() },
-      { text: "Switch Before/After modes to separate hue decisions from layout decisions.", options: bodyStyle() },
-      { text: "Pick one variant per page; show 1×2 / 2×1 presets for asymmetric composition.", options: bodyStyle() },
-      { text: "Export as merged PDF and per-page SVG for further visual refinement.", options: bodyStyle() },
-    ],
-    // Text on the left; screenshot on the right.
-    { x: SAFE_MARGIN_L, y: 1.75, w: 4.7, h: 3.6 },
-  );
+  const demoText = [
+    "1. Show language toggle（中文 ↔ English）。",
+    "2. Upload SVG/PDF：在 Options dock 改色系/风格/网格并观察层级变化。",
+    "3. Use Before/After：分开看色相滤镜 vs 版式位移。",
+    "4. Select one variant per page（含 1×2 / 2×1 非对称预设）。",
+    "5. Export：合并 PDF + 每页 SVG（方便继续排版与微调）。",
+  ].join("\n");
+  s7.addText(demoText, {
+    x: 0.55,
+    y: 1.65,
+    w: 4.65,
+    h: 4.6,
+    fontSize: 14,
+    color: SLATE,
+    fontFace: FONT_PRIMARY,
+    lineSpacingMultiple: 1.08,
+    bullet: false,
+  });
 
   // --- Slide 8: Reflection (design) ---
   const s8 = slideTitle(pptx, "Reflection 反思", "Design focus · Next steps");

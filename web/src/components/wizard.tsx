@@ -1338,7 +1338,7 @@ function FieldGroup({
   return (
     <div
       className={cn(
-        "space-y-4 overflow-visible rounded-2xl border border-border/60 bg-card/85 p-5 shadow-soft ring-1 ring-slate-950/5 backdrop-blur-sm",
+        "space-y-4 overflow-visible rounded-2xl border border-border/35 bg-card/60 p-5 shadow-soft ring-1 ring-slate-950/5 backdrop-blur-xl saturate-150",
         className,
       )}
     >
