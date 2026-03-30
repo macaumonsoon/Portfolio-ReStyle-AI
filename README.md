@@ -20,11 +20,13 @@ The Pages site summarizes the design narrative, UI/UX decisions, and links back 
 
 ## Slide deck (PowerPoint — open directly)
 
-A ready-made **`.pptx`** is in the repo:
+Download the latest user-edited **`.pptx`** from GitHub Releases:
 
-**`presentation/Portfolio-ReStyle-AI-Design-Deck.pptx`**
+**[Portfolio-ReStyle-AI-Design-Deck.pptx](https://github.com/macaumonsoon/Portfolio-ReStyle-AI/releases/download/presentation-deck-2026-03-30/Portfolio-ReStyle-AI-Design-Deck.pptx)**
 
-Double-click to open in Microsoft PowerPoint, Keynote, or compatible apps. Edit the title slide to add **real names and student IDs**.
+Release page: **[presentation-deck-2026-03-30](https://github.com/macaumonsoon/Portfolio-ReStyle-AI/releases/tag/presentation-deck-2026-03-30)**
+
+Open in Microsoft PowerPoint, Keynote, or compatible apps. Edit the title slide to add **real names and student IDs**.
 
 To **regenerate** the file after editing the script:
 
