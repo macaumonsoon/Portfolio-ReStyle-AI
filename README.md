@@ -52,9 +52,8 @@ Edit this table before submission (English name, Chinese name, student ID).
 
 | English name | 中文姓名 | Student ID |
 |--------------|----------|------------|
-| *e.g. Jane Doe* | *例：張三* | *2024xxxx* |
-
-| | | |
+| Guo Xiaoyue | 郭曉玥 | MC569254 |
+| Liu Jiaqun | 劉佳群 | MC569293 |
 
 *If you worked solo, keep one row and remove extras.*
 

@@ -15,6 +15,12 @@ const MUTED = "64748B";
 const FONT_PRIMARY = "Helvetica Neue";
 const SAFE_MARGIN_L = 0.6; // slide safe left margin (in PPT units)
 
+// Screenshots (used for function explanation slides)
+const IMG_OPTIONS_DOCK =
+  "/Users/guoxiaoyue/.cursor/projects/Users-guoxiaoyue-Downloads-cursor-Portfolio-ReStyle-AI/assets/__2026-03-30_15.46.38-49fcc9cf-c541-460f-b822-e381967fc6bf.png";
+const IMG_OPTIONS_GRID =
+  "/Users/guoxiaoyue/.cursor/projects/Users-guoxiaoyue-Downloads-cursor-Portfolio-ReStyle-AI/assets/__2026-03-30_15.46.25-614732c6-5924-43fb-88f9-746a1dc6626e.png";
+
 function titleStyle() {
   return {
     fontSize: 32,
@@ -100,7 +106,7 @@ async function main() {
     },
   );
   s1.addText(
-    "組員 Members\n郭曉玥 (Guo Xiaoyue) · MC569254\n劉佳群 (Liu Jiaqun) · MCxxxxxx",
+    "組員 Members\n郭曉玥 (Guo Xiaoyue) · MC569254\n劉佳群 (Liu Jiaqun) · MC569293",
     {
       x: SAFE_MARGIN_L,
       y: 4.2,
@@ -151,6 +157,14 @@ async function main() {
     "In visual communication 在視傳流程中",
     "How designers can use this tool",
   );
+  // Right side screenshot: show dock preview + option controls
+  s4.addImage({
+    path: IMG_OPTIONS_DOCK,
+    x: 5.35,
+    y: 1.8,
+    w: 4.35,
+    h: 2.7,
+  });
   s4.addText(
     [
       { text: "Direction exploration: color + style with immediate preview feedback.", options: bodyStyle() },
@@ -162,26 +176,41 @@ async function main() {
       { text: "Workflow: Upload → set intent (palette/style/canvas/narrative/grid) → review per page → choose variant → export SVG/PDF.", options: bodyStyle() },
       { text: "流程：上傳 → 設定意圖（色系/風格/畫布/敘事/網格）→ 逐頁審閱 → 選擇版本 → 匯出 SVG/PDF。", options: { ...bodyStyle(), fontSize: 15 } },
     ],
-    { x: 0.6, y: 1.75, w: 8.8, h: 4.2 },
+    // Keep text width on the left so it won't collide with the screenshot
+    { x: 0.6, y: 1.75, w: 4.7, h: 4.2 },
   );
 
   // --- Slide 5: Design thinking (process) ---
   const s5 = slideTitle(pptx, "Design thinking 設計思維", "From layout pain → clear workflow");
-  s5.addText(
-    [
-      { text: "Empathize: designers lose time to repetitive layout work (order, grid, spacing).", options: bodyStyle() },
-      { text: "同理：設計師把時間花在重複排版（頁序、網格、字距）上。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "Define: assist decisions, not replace authorship — keep designer in control.", options: bodyStyle() },
-      { text: "定義：協助決策而不是取代創作權 — 讓設計師保持控制。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "Ideate: wizard + persistent dock + only 3 variants per page for faster comparison.", options: bodyStyle() },
-      { text: "發想：精靈流程 + 持續側欄預覽 + 每頁僅 3 個版本，提升比對效率。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "Prototype: bilingual UI, grid remix, tile nudge, before/after compare — designed for readability.", options: bodyStyle() },
-      { text: "原型：雙語介面、網格重排、區塊微調、Before/After 對比 — 以可讀性為核心排版。", options: { ...bodyStyle(), fontSize: 15 } },
-      { text: "Test: keep previews synchronized across steps and ensure typography hierarchy stays stable.", options: bodyStyle() },
-      { text: "測試：讓步驟間預覽同步、並確保字體層級在界面中保持穩定。", options: { ...bodyStyle(), fontSize: 15 } },
-    ],
-    { x: SAFE_MARGIN_L, y: 1.75, w: 8.8, h: 4.6 },
-  );
+  // Reduce to fewer, denser bullets so text never overflows the slide height.
+  const thinkingBullets = [
+    {
+      text: "Empathize 同理：repetitive layout work (order/grid/spacing) steals time → designer stays in control.",
+      options: { ...bodyStyle(), fontSize: 14, lineSpacingMultiple: 1.08 },
+    },
+    {
+      text: "Define 定義：assist decisions, not replace authorship — keep authorship and taste.",
+      options: { ...bodyStyle(), fontSize: 14, lineSpacingMultiple: 1.08 },
+    },
+    {
+      text: "Ideate 發想：wizard + persistent dock + only 3 variants per page → faster comparison.",
+      options: { ...bodyStyle(), fontSize: 14, lineSpacingMultiple: 1.08 },
+    },
+    {
+      text: "Prototype 原型：bilingual UI + grid remix + tile nudge + before/after compare for readability.",
+      options: { ...bodyStyle(), fontSize: 14, lineSpacingMultiple: 1.08 },
+    },
+    {
+      text: "Test 測試：synchronize previews across steps and keep typography hierarchy stable (e.g. 1×2 grids).",
+      options: { ...bodyStyle(), fontSize: 14, lineSpacingMultiple: 1.08 },
+    },
+  ];
+  s5.addText(thinkingBullets, {
+    x: SAFE_MARGIN_L,
+    y: 1.75,
+    w: 8.8,
+    h: 3.75,
+  });
 
   // --- Slide 6: Design system principles (visual design emphasis) ---
   const s6 = slideTitle(
@@ -226,6 +255,13 @@ async function main() {
 
   // --- Slide 7: Demo (visual-focused) ---
   const s7 = slideTitle(pptx, "Demo script 演示腳本", "For your screen recording / video");
+  s7.addImage({
+    path: IMG_OPTIONS_GRID,
+    x: 5.35,
+    y: 1.8,
+    w: 4.35,
+    h: 2.7,
+  });
   s7.addText(
     [
       { text: "Show bilingual toggle (中文 ↔ English).", options: bodyStyle() },
@@ -234,7 +270,8 @@ async function main() {
       { text: "Pick one variant per page; show 1×2 / 2×1 presets for asymmetric composition.", options: bodyStyle() },
       { text: "Export as merged PDF and per-page SVG for further visual refinement.", options: bodyStyle() },
     ],
-    { x: SAFE_MARGIN_L, y: 1.75, w: 8.8, h: 3.6 },
+    // Text on the left; screenshot on the right.
+    { x: SAFE_MARGIN_L, y: 1.75, w: 4.7, h: 3.6 },
   );
 
   // --- Slide 8: Reflection (design) ---
