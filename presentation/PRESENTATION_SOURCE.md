@@ -1,6 +1,8 @@
 # Presentation source (for slides / Cursor)
 
-Use this markdown as the **content backbone** for your slide deck (PowerPoint, Keynote, Google Slides, or export from Cursor).  
+**Ready-to-open deck:** `Portfolio-ReStyle-AI-Design-Deck.pptx` (same folder). Regenerate with `cd web && npm run presentation:pptx`.
+
+Use this markdown as the **content backbone** if you want to extend or restructure slides (PowerPoint, Keynote, Google Slides, or export from Cursor).  
 **Focus: design** — purpose, VCD workflow, design thinking, UI/UX decisions. Keep engineering as a short appendix only.
 
 ---
@@ -49,15 +51,17 @@ Use this markdown as the **content backbone** for your slide deck (PowerPoint, K
 
 ## Slide 6 — UI/UX decisions (with rationale)
 
-| Decision | Rationale |
-|----------|-----------|
-| Stepper wizard | Reduces cognitive load; one job per step. |
-| Persistent preview dock | Tight feedback loop while changing options. |
-| Bilingual toggle (header) | Course requirement + real users in mixed locales. |
-| 3 variants only | Enough to compare; avoids choice overload. |
+
+| Decision                          | Rationale                                                  |
+| --------------------------------- | ---------------------------------------------------------- |
+| Stepper wizard                    | Reduces cognitive load; one job per step.                  |
+| Persistent preview dock           | Tight feedback loop while changing options.                |
+| Bilingual toggle (header)         | Course requirement + real users in mixed locales.          |
+| 3 variants only                   | Enough to compare; avoids choice overload.                 |
 | Before/After + color/layout modes | Separates “look” from “composition” for clearer decisions. |
-| Grid thumbnails | Quick recognition of 2×2 vs 1×2 vs 2×1. |
-| Softer preview / full export | Readability in UI vs. fidelity in deliverables. |
+| Grid thumbnails                   | Quick recognition of 2×2 vs 1×2 vs 2×1.                    |
+| Softer preview / full export      | Readability in UI vs. fidelity in deliverables.            |
+
 
 ---
 
@@ -83,3 +87,4 @@ Use this markdown as the **content backbone** for your slide deck (PowerPoint, K
 
 - Next.js, Tailwind, Zustand; Gemini optional for text/vision helpers.
 - Link: [Google AI Studio](https://aistudio.google.com/apikey) · [Gemini API docs](https://ai.google.dev/gemini-api/docs)
+

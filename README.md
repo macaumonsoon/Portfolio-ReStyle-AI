@@ -18,6 +18,25 @@ The Pages site summarizes the design narrative, UI/UX decisions, and links back 
 
 ---
 
+## Slide deck (PowerPoint — open directly)
+
+A ready-made **`.pptx`** is in the repo:
+
+**`presentation/Portfolio-ReStyle-AI-Design-Deck.pptx`**
+
+Double-click to open in Microsoft PowerPoint, Keynote, or compatible apps. Edit the title slide to add **real names and student IDs**.
+
+To **regenerate** the file after editing the script:
+
+```bash
+cd web
+npm run presentation:pptx
+```
+
+Markdown source for further edits: `presentation/PRESENTATION_SOURCE.md`.
+
+---
+
 ## Video presentation (YouTube)
 
 **[Add your YouTube video URL here after uploading]**  
@@ -34,6 +53,7 @@ Edit this table before submission (English name, Chinese name, student ID).
 | English name | 中文姓名 | Student ID |
 |--------------|----------|------------|
 | *e.g. Jane Doe* | *例：張三* | *2024xxxx* |
+
 | | | |
 
 *If you worked solo, keep one row and remove extras.*
