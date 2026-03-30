@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio ReStyle AI — Design presentation</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #fff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #6366f1;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: #fff;
+      padding: 2.5rem 1.5rem 2rem;
+    }
+    header h1 { margin: 0 0 0.5rem; font-size: clamp(1.5rem, 4vw, 2rem); }
+    header p { margin: 0; opacity: 0.92; max-width: 42rem; }
+    .wrap { max-width: 48rem; margin: 0 auto; padding: 0 1.25rem; }
+    nav.lang {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    nav.lang button {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: #fff;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    nav.lang button[aria-pressed="true"] {
+      background: #fff;
+      color: #4f46e5;
+      border-color: #fff;
+    }
+    main { padding: 2rem 0 4rem; }
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem 1.25rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.06);
+    }
+    section h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.15rem;
+      color: var(--accent);
+    }
+    section p, section ul { margin: 0 0 0.75rem; color: var(--text); }
+    section ul { padding-left: 1.25rem; }
+    section li { margin-bottom: 0.35rem; }
+    .muted { color: var(--muted); font-size: 0.9rem; }
+    a { color: var(--accent); }
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--muted);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--border);
+    }
+    [data-lang="zh"] .en-only { display: none; }
+    [data-lang="en"] .zh-only { display: none; }
+  </style>
+</head>
+<body data-lang="en">
+  <header>
+    <div class="wrap">
+      <h1>Portfolio ReStyle AI</h1>
+      <p class="en-only">Design-focused presentation for a visual communication design workflow tool.</p>
+      <p class="zh-only">視覺傳達設計流程工具的設計向簡報（課程展示用）。</p>
+      <nav class="lang" aria-label="Language">
+        <button type="button" id="btn-en" aria-pressed="true">English</button>
+        <button type="button" id="btn-zh" aria-pressed="false">中文</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section>
+      <h2 class="en-only">Why this app</h2>
+      <h2 class="zh-only">為什麼做這個工具</h2>
+      <p class="en-only">Portfolios are not only visuals—they are <strong>narratives</strong> of process and identity. Designers spend heavy time on repetitive layout work (grids, scaling, reordering) instead of storytelling. This prototype explores <strong>human–AI collaboration</strong>: upload existing work, set intent (palette, style, narrative order), compare variants, and export—keeping the designer in control.</p>
+      <p class="zh-only">作品集不只是畫面，更是<strong>敘事與專業身份</strong>。設計師常把大量時間花在網格、縮放、重排等重複勞動上。本原型探討<strong>人機協作</strong>：上傳既有稿件、設定意圖（色系、風格、敘事順序）、比對多版本再匯出，決策權仍在設計師手中。</p>
+    </section>
+
+    <section>
+      <h2 class="en-only">Use in visual communication design</h2>
+      <h2 class="zh-only">在視覺傳達設計流程中的用途</h2>
+      <ul class="en-only">
+        <li><strong>Restructure</strong> multi-page PDF/SVG decks for different audiences (interview, review, print).</li>
+        <li><strong>Explore</strong> palette and style directions quickly with live preview before deep production.</li>
+        <li><strong>Iterate</strong> on grid-based compositions (remix + optional tile nudge) as a layout sketching aid.</li>
+        <li><strong>Document</strong> decisions via export (SVG for Figma/editor, PDF for sharing).</li>
+      </ul>
+      <ul class="zh-only">
+        <li>為不同場景（面試、評圖、印刷）<strong>重組</strong>多頁 PDF／SVG 稿。</li>
+        <li>在深入製作前，用即時預覽<strong>快速試驗</strong>色系與風格方向。</li>
+        <li>以網格重排與區塊微調作為<strong>版面草圖</strong>手段，反覆嘗試構圖。</li>
+        <li>透過匯出（向量 SVG／合併 PDF）<strong>固化</strong>設計決策與交付物。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="en-only">Design thinking</h2>
+      <h2 class="zh-only">設計思維過程</h2>
+      <p class="en-only">We framed the problem as <em>re-interpretation</em>, not full automation: the system proposes variations; the designer selects. The flow mirrors real studio steps—<strong>upload → intent (style/canvas) → review per page → export</strong>—so cognitive load stays low and trust stays high.</p>
+      <p class="zh-only">我們將問題定義為<strong>再詮釋</strong>而非全自動：系統提出變體，設計師做選擇。流程對齊真實工作室步驟—<strong>上傳 → 意圖（風格／畫布）→ 逐頁審閱 → 匯出</strong>—以降低認知負荷並維持信任感。</p>
+    </section>
+
+    <section>
+      <h2 class="en-only">Key UI/UX decisions</h2>
+      <h2 class="zh-only">主要介面／體驗決策</h2>
+      <ul class="en-only">
+        <li><strong>Bilingual toggle</strong> in the header—persistent via localStorage for global audiences and coursework requirements.</li>
+        <li><strong>Stepper wizard</strong> reduces overwhelm; advanced options (grid, narrative) stay on the style step.</li>
+        <li><strong>Dock preview</strong> stays visible while editing options; export uses full-strength styling so previews stay readable.</li>
+        <li><strong>Three variants per page</strong> supports comparison without infinite choice paralysis.</li>
+        <li><strong>Before/After + pan</strong> helps judge color vs. layout separately.</li>
+        <li><strong>Grid preset icons</strong> (mini diagrams) make asymmetric layouts (1×2, 2×1) scannable.</li>
+      </ul>
+      <ul class="zh-only">
+        <li><strong>頂部雙語切換</strong>並寫入 localStorage，兼顧課程要求與跨語境使用者。</li>
+        <li><strong>步驟式精靈</strong>降低資訊量；網格、敘事等進階選項集中在風格步。</li>
+        <li><strong>右側 dock 預覽</strong>與選項同步；匯出仍保留完整濾鏡強度，預覽則偏清晰可讀。</li>
+        <li><strong>每頁三版本</strong>利於比對，又避免選項過多造成決策疲勞。</li>
+        <li><strong>Before/After 與平移</strong>可分開檢視色彩與版式差異。</li>
+        <li><strong>網格預設圖示</strong>（小示意圖）讓 1×2、2×1 等非對稱網格一眼可辨。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="en-only">Development note (brief)</h2>
+      <h2 class="zh-only">開發說明（簡述）</h2>
+      <p class="en-only">Built with Next.js, Tailwind, Zustand; optional Gemini APIs for copy and ordering assistance. Technical choices support reliable SVG/PDF handling in the browser; emphasis in grading should remain on <strong>design rationale</strong> above implementation detail.</p>
+      <p class="zh-only">以 Next.js、Tailwind、Zustand 實作；可選 Gemini API 輔助文案與排序。技術選型服務瀏覽器內 SVG／PDF 處理；評分重點仍建議放在<strong>設計論述</strong>而非純技術細節。</p>
+    </section>
+
+    <section>
+      <h2 class="en-only">Links</h2>
+      <h2 class="zh-only">連結</h2>
+      <p class="en-only">
+        <a href="https://github.com/macaumonsoon/Portfolio-ReStyle-AI">GitHub repository</a>
+        · <span class="muted">Video: add YouTube URL in repo README after upload.</span>
+      </p>
+      <p class="zh-only">
+        <a href="https://github.com/macaumonsoon/Portfolio-ReStyle-AI">GitHub 程式庫</a>
+        · <span class="muted">影片：上傳 YouTube 後請在倉庫 README 填入連結。</span>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p class="en-only">Portfolio ReStyle AI — coursework presentation page</p>
+    <p class="zh-only">Portfolio ReStyle AI — 課程展示頁</p>
+  </footer>
+
+  <script>
+    function setLang(lang) {
+      document.body.dataset.lang = lang;
+      document.getElementById("btn-en").setAttribute("aria-pressed", lang === "en");
+      document.getElementById("btn-zh").setAttribute("aria-pressed", lang === "zh");
+      document.documentElement.lang = lang === "zh" ? "zh-Hant" : "en";
+    }
+    document.getElementById("btn-en").addEventListener("click", () => setLang("en"));
+    document.getElementById("btn-zh").addEventListener("click", () => setLang("zh"));
+  </script>
+</body>
+</html>
