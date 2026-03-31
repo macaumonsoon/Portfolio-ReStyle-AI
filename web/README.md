@@ -26,6 +26,10 @@ npm run dev
 
 瀏覽器開啟 [http://localhost:3000](http://localhost:3000)。
 
+## Video presentation (YouTube)
+
+[https://youtu.be/w9JgCaEN3wc](https://youtu.be/w9JgCaEN3wc)
+
 ## 目錄摘要
 
 | 路徑 | 說明 |
