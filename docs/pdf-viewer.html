@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio ReStyle AI — PDF preview</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #0f172a; font-family: system-ui, sans-serif; }
+    .bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #312e81;
+      color: #e0e7ff;
+      font-size: 14px;
+    }
+    .bar a { color: #c7d2fe; text-decoration: none; font-weight: 600; }
+    .bar a:hover { text-decoration: underline; }
+    .frame-wrap {
+      height: calc(100vh - 44px);
+      background: #1e293b;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <a href="./index.html">← Back / 返回</a>
+    <span>Portfolio-ReStyle-AI-Design-Deck.pdf</span>
+  </div>
+  <div class="frame-wrap">
+    <iframe title="PDF preview" src="./Portfolio-ReStyle-AI-Design-Deck.pdf#view=FitH"></iframe>
+  </div>
+</body>
+</html>
