@@ -41,9 +41,10 @@ Markdown source for further edits: `presentation/PRESENTATION_SOURCE.md`.
 
 ## Video presentation (YouTube)
 
-**[Watch the demo on YouTube](https://youtu.be/w9JgCaEN3wc)**
+Walkthrough of the app in use and how it maps to the slide deck (purpose, visual communication context, design thinking, UI/UX).
 
-The recording walks through the app in use and ties to the slide deck (purpose, VCD context, design thinking, UI/UX decisions).
+- **Watch on YouTube:** [youtu.be/w9JgCaEN3wc](https://youtu.be/w9JgCaEN3wc)
+- **Full URL:** https://www.youtube.com/watch?v=w9JgCaEN3wc
 
 ---
 

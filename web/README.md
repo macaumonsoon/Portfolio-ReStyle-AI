@@ -28,7 +28,10 @@ npm run dev
 
 ## Video presentation (YouTube)
 
-[https://youtu.be/w9JgCaEN3wc](https://youtu.be/w9JgCaEN3wc)
+- **Watch:** [youtu.be/w9JgCaEN3wc](https://youtu.be/w9JgCaEN3wc)
+- **Full URL:** https://www.youtube.com/watch?v=w9JgCaEN3wc
+
+（完整說明與組員資訊見根目錄 [README.md](../README.md)。）
 
 ## 目錄摘要
 
