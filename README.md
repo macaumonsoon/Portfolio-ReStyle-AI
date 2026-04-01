@@ -41,10 +41,9 @@ Markdown source for further edits: `presentation/PRESENTATION_SOURCE.md`.
 
 ## Video presentation (YouTube)
 
-**[Add your YouTube video URL here after uploading]**  
-Example format: `https://www.youtube.com/watch?v=YOUR_VIDEO_ID`
+**[Watch the demo on YouTube](https://youtu.be/w9JgCaEN3wc)**
 
-The video should demonstrate the app working and reference your slide deck (design-focused: purpose, VCD use, design thinking, UI/UX decisions).
+The recording walks through the app in use and ties to the slide deck (purpose, VCD context, design thinking, UI/UX decisions).
 
 ---
 

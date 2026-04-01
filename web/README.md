@@ -1,6 +1,6 @@
 # Portfolio ReStyle AI — Web
 
-> **Course / assignment:** see the **[repository root README](../README.md)** for GitHub Pages link, YouTube placeholder, group roster, and API key policy.
+> **Course / assignment:** see the **[repository root README](../README.md)** for GitHub Pages link, YouTube demo video, group roster, and API key policy.
 
 對齊專案根目錄 `background.md` 的 **可互動原型**：Next.js App Router、Tailwind、Radix 風格 UI（shadcn 同級元件）、Zustand 狀態。介面支援 **中文／English**（頁首語言按鈕）。
 
