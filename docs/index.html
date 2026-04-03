@@ -511,6 +511,121 @@
       font-weight: 500;
     }
 
+    .product-showcase {
+      margin-top: 22px;
+    }
+
+    .product-showcase-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 16px;
+      padding-left: 14px;
+      border-left: 3px solid transparent;
+      border-image: linear-gradient(180deg, #a78bfa, #6366f1) 1;
+    }
+
+    .product-showcase-icon {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #c4b5fd;
+    }
+
+    .product-showcase-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .product-showcase-head h2 {
+      margin: 0 0 6px;
+      font-size: clamp(19px, 2.4vw, 24px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #e0e7ff;
+    }
+
+    .product-showcase-head p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+      line-height: 1.5;
+      max-width: 640px;
+    }
+
+    .product-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    @media (min-width: 960px) {
+      .product-showcase-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    .product-showcase figure {
+      margin: 0;
+    }
+
+    .product-shot {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #0a0a10 0%, #12121a 100%);
+      box-shadow:
+        0 14px 36px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .product-shot:hover {
+      border-color: rgba(139, 92, 246, 0.25);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(99, 102, 241, 0.08);
+    }
+
+    .product-shot img {
+      display: block;
+      width: 100%;
+      height: auto;
+      vertical-align: middle;
+    }
+
+    .product-shot a {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .product-showcase figcaption {
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      line-height: 1.45;
+    }
+
+    .product-showcase figcaption span {
+      display: block;
+    }
+
+    .product-showcase .caption-sub {
+      font-weight: 500;
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
     .grid {
       position: relative;
       z-index: 1;
@@ -752,6 +867,9 @@
     }
 
     @media (max-width: 640px) {
+      .product-showcase-grid {
+        grid-template-columns: 1fr;
+      }
       .hero-top {
         flex-direction: column;
         padding-right: 0;
@@ -892,6 +1010,75 @@
             <p class="flow-line-zh">匯出合併 PDF 與每頁 SVG。</p>
           </article>
         </div>
+      </div>
+    </section>
+
+    <!-- Stylized UI mockups (SVG). Replace with PNG/WebP captures from the app or PDF export: same filenames in ./assets/ -->
+    <section class="product-showcase" id="sec-product" aria-labelledby="product-showcase-title">
+      <div class="product-showcase-head">
+        <div class="product-showcase-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <path d="M8 21h8M12 17v4" />
+            <path d="M7 8h6M7 11h4" opacity="0.7" />
+          </svg>
+        </div>
+        <div>
+          <h2 id="product-showcase-title">
+            <span class="en-only">Inside the product</span>
+            <span class="zh-only">產品界面一瞥</span>
+          </h2>
+          <p class="en-only">Schematic previews aligned with the wizard, three-up compare, export bar, and slide deck (replace images in /docs/assets/ with your own screenshots anytime).</p>
+          <p class="zh-only">以下為與精靈流程、三版本比對、匯出與簡報相呼應的示意畫面（可將 /docs/assets/ 內 SVG 換成你自行截圖的 PNG/WebP）。</p>
+        </div>
+      </div>
+      <div class="product-showcase-grid">
+        <figure>
+          <div class="product-shot">
+            <img src="./assets/ui-wizard.svg" width="360" height="220" loading="lazy" decoding="async" alt="" />
+          </div>
+          <figcaption>
+            <span class="en-only">Wizard &amp; options</span>
+            <span class="zh-only">精靈與選項</span>
+            <span class="caption-sub en-only">Steps, palette &amp; narrative</span>
+            <span class="caption-sub zh-only">步驟、色系與敘事</span>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="product-shot">
+            <img src="./assets/ui-variants.svg" width="360" height="220" loading="lazy" decoding="async" alt="" />
+          </div>
+          <figcaption>
+            <span class="en-only">Three variants</span>
+            <span class="zh-only">三種版面變體</span>
+            <span class="caption-sub en-only">Side-by-side compare</span>
+            <span class="caption-sub zh-only">並列比對</span>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="product-shot">
+            <img src="./assets/ui-export.svg" width="360" height="220" loading="lazy" decoding="async" alt="" />
+          </div>
+          <figcaption>
+            <span class="en-only">Export</span>
+            <span class="zh-only">匯出</span>
+            <span class="caption-sub en-only">PDF / SVG pipeline</span>
+            <span class="caption-sub zh-only">PDF / SVG 流程</span>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="product-shot">
+            <a href="./pdf-viewer.html" target="_blank" rel="noreferrer">
+              <img src="./assets/deck-preview.svg" width="360" height="220" loading="lazy" decoding="async" alt="" />
+            </a>
+          </div>
+          <figcaption>
+            <span class="en-only">Design deck (PDF)</span>
+            <span class="zh-only">設計簡報（PDF）</span>
+            <span class="caption-sub en-only">Open in-browser preview →</span>
+            <span class="caption-sub zh-only">瀏覽器內預覽 →</span>
+          </figcaption>
+        </figure>
       </div>
     </section>
 
