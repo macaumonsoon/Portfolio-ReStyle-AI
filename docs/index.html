@@ -393,30 +393,32 @@
     }
 
     .flow-section {
-      margin-top: 8px;
+      margin-top: 12px;
       margin-bottom: 8px;
     }
 
-    .flow-section .flow-head {
-      margin-bottom: 14px;
-      padding-left: 14px;
-      border-left: 3px solid transparent;
-      border-image: linear-gradient(180deg, #a78bfa, #6366f1) 1;
+    .flow-head {
+      margin-bottom: 16px;
+      padding: 0 2px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     }
 
-    .flow-section .flow-head h2 {
+    .flow-head h2 {
       margin: 0 0 6px;
-      font-size: clamp(19px, 2.4vw, 24px);
-      font-weight: 800;
+      font-size: clamp(17px, 2.1vw, 21px);
+      font-weight: 700;
       letter-spacing: -0.02em;
       color: #e0e7ff;
+      line-height: 1.2;
     }
 
-    .flow-section .flow-head p {
+    .flow-head .flow-lede {
       margin: 0;
-      font-size: 13px;
-      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      color: #8b96a8;
       font-weight: 500;
+      max-width: 38rem;
     }
 
     .flow-rail {
@@ -845,8 +847,8 @@
           <span class="en-only">UX Flow</span>
           <span class="zh-only">UX 流程</span>
         </h2>
-        <p class="en-only">Four beats — swipe on mobile.</p>
-        <p class="zh-only">四個步驟 — 手機可橫向滑動瀏覽。</p>
+        <p class="flow-lede en-only">Four beats — swipe on mobile.</p>
+        <p class="flow-lede zh-only">四個步驟 — 手機可橫向滑動瀏覽。</p>
       </div>
       <div class="flow-rail" tabindex="0" role="region" aria-label="UX flow steps">
         <div class="flow-track">
