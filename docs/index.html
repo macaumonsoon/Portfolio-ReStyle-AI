@@ -513,6 +513,121 @@
 
     .card li { margin-bottom: 6px; }
 
+    .tech-bar {
+      position: relative;
+      margin-top: 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(139, 92, 246, 0.28);
+      overflow: hidden;
+      box-shadow:
+        0 20px 48px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .tech-bar-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 120% at 0% 50%, rgba(99, 102, 241, 0.2), transparent 55%),
+        radial-gradient(ellipse 60% 100% at 100% 30%, rgba(34, 211, 238, 0.12), transparent 50%),
+        linear-gradient(105deg, rgba(30, 27, 75, 0.65) 0%, rgba(15, 23, 42, 0.85) 45%, rgba(49, 46, 129, 0.4) 100%),
+        repeating-linear-gradient(
+          -18deg,
+          transparent,
+          transparent 14px,
+          rgba(255, 255, 255, 0.025) 14px,
+          rgba(255, 255, 255, 0.025) 15px
+        );
+    }
+
+    .tech-bar-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+      padding: 22px 24px;
+    }
+
+    .tech-bar-icon {
+      flex-shrink: 0;
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(167, 139, 250, 0.35);
+      color: #c4b5fd;
+    }
+
+    .tech-bar-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .tech-bar-copy {
+      flex: 1;
+      min-width: min(100%, 220px);
+    }
+
+    .tech-bar-copy h2 {
+      margin: 0 0 8px;
+      font-size: clamp(17px, 2.1vw, 22px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #f1f5ff;
+    }
+
+    .tech-bar-copy > p {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 720px;
+    }
+
+    .tech-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tech-chip {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 5px 11px;
+      border-radius: 999px;
+      color: #e0e7ff;
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(139, 92, 246, 0.35);
+    }
+
+    .tech-chip.muted {
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.1);
+      font-weight: 600;
+    }
+
+    .tech-bar-aside {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    .tech-bar-aside .btn {
+      white-space: nowrap;
+    }
+
     footer {
       margin-top: 22px;
       padding-top: 20px;
@@ -552,6 +667,15 @@
         right: 8px;
         width: 100px;
         height: 100px;
+      }
+      .tech-bar-inner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .tech-bar-icon { align-self: flex-start; }
+      .tech-bar-aside .btn {
+        width: 100%;
+        justify-content: center;
       }
     }
   </style>
@@ -743,13 +867,40 @@
         <p class="en-only">Next, we plan finer typography controls, broader accessibility checks, and stronger layout intelligence while keeping API keys local-only.</p>
         <p class="zh-only">下一步將加強字體微調能力、完整可及性檢查與版面智能，同時維持 API key 僅本機使用。</p>
       </article>
+    </section>
 
-      <article class="card">
-        <h2 class="en-only">Tech Appendix (brief)</h2>
-        <h2 class="zh-only">技術附錄（簡述）</h2>
-        <p class="en-only">Stack: Next.js, Tailwind, Zustand. Optional Gemini features for text/vision helpers.</p>
-        <p class="zh-only">技術堆疊：Next.js、Tailwind、Zustand；可選 Gemini 文本/視覺輔助能力。</p>
-      </article>
+    <section class="tech-bar" id="sec-tech" aria-labelledby="tech-heading">
+      <div class="tech-bar-bg" aria-hidden="true"></div>
+      <div class="tech-bar-inner">
+        <div class="tech-bar-icon" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 22V10l8-4v16l-8 4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity="0.9" />
+            <path d="M12 6l8 4v12l-8-4V6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity="0.65" />
+            <path d="M20 10l8 4v10l-8-4V10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity="0.45" />
+          </svg>
+        </div>
+        <div class="tech-bar-copy">
+          <h2 id="tech-heading">
+            <span class="en-only">Tech Appendix (brief)</span>
+            <span class="zh-only">技術附錄（簡述）</span>
+          </h2>
+          <p class="en-only">Stack: Next.js, Tailwind, Zustand. Optional Gemini features for text/vision helpers.</p>
+          <p class="zh-only">技術堆疊：Next.js、Tailwind、Zustand；可選 Gemini 文本/視覺輔助能力。</p>
+          <div class="tech-chips" aria-hidden="true">
+            <span class="tech-chip">Next.js</span>
+            <span class="tech-chip">Tailwind</span>
+            <span class="tech-chip">Zustand</span>
+            <span class="tech-chip muted en-only">Gemini · optional</span>
+            <span class="tech-chip muted zh-only">Gemini · 可選</span>
+          </div>
+        </div>
+        <div class="tech-bar-aside">
+          <a class="btn secondary" href="https://github.com/macaumonsoon/Portfolio-ReStyle-AI" target="_blank" rel="noreferrer">
+            <span class="en-only">View on GitHub →</span>
+            <span class="zh-only">在 GitHub 查看 →</span>
+          </a>
+        </div>
+      </div>
     </section>
 
     <footer id="sec-footer">
