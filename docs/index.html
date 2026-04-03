@@ -23,12 +23,22 @@
       --glass-strong: rgba(16, 16, 24, 0.72);
       --shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
       --glow-brand: 0 0 80px rgba(139, 92, 246, 0.15);
+      --reveal-y: 28px;
+      --reveal-dur: 0.75s;
     }
 
     * { box-sizing: border-box; }
 
     html {
       color-scheme: dark;
+      scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal-section { transition: none !important; }
+      .motif-animate { animation: none !important; }
+      .scroll-cue { animation: none !important; }
     }
 
     body {
@@ -57,12 +67,82 @@
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
     }
 
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      z-index: 1000;
+      background: linear-gradient(90deg, #6366f1, #a78bfa, #22d3ee);
+      transform-origin: left;
+      transition: width 0.08s linear;
+    }
+
+    .section-nav {
+      position: fixed;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .section-nav a {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .section-nav a:hover {
+      transform: scale(1.15);
+      background: rgba(167, 139, 250, 0.45);
+    }
+
+    .section-nav a[aria-current="true"] {
+      background: linear-gradient(135deg, #a78bfa, #6366f1);
+      box-shadow: 0 0 14px rgba(139, 92, 246, 0.55);
+    }
+
+    .section-nav span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 768px) {
+      .section-nav { display: none; }
+    }
+
     .wrap {
       position: relative;
       z-index: 1;
       max-width: 1080px;
       margin: 0 auto;
       padding: 28px 16px 52px;
+    }
+
+    .reveal-section {
+      opacity: 0;
+      transform: translateY(var(--reveal-y));
+      transition: opacity var(--reveal-dur) cubic-bezier(0.22, 1, 0.36, 1),
+        transform var(--reveal-dur) cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .top {
@@ -137,6 +217,9 @@
       padding: clamp(22px, 4vw, 38px);
       margin-bottom: 16px;
       overflow: hidden;
+      min-height: min(72vh, 620px);
+      display: flex;
+      flex-direction: column;
     }
 
     .hero::before {
@@ -150,6 +233,33 @@
       pointer-events: none;
     }
 
+    .hero-motif-wrap {
+      position: absolute;
+      top: clamp(12px, 3vw, 28px);
+      right: clamp(12px, 3vw, 24px);
+      width: min(160px, 38vw);
+      height: min(160px, 38vw);
+      pointer-events: none;
+      color: #a78bfa;
+      opacity: 0.85;
+    }
+
+    .hero-motif-wrap svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .motif-animate {
+      stroke-dasharray: 320;
+      stroke-dashoffset: 320;
+      animation: motif-draw 5s ease-in-out infinite alternate;
+    }
+
+    @keyframes motif-draw {
+      0% { stroke-dashoffset: 320; opacity: 0.35; }
+      100% { stroke-dashoffset: 0; opacity: 0.9; }
+    }
+
     .hero-top {
       display: flex;
       align-items: flex-start;
@@ -157,6 +267,10 @@
       gap: 16px;
       flex-wrap: wrap;
       margin-bottom: 4px;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+      padding-right: min(140px, 32vw);
     }
 
     .hero-intro {
@@ -164,10 +278,22 @@
       min-width: min(100%, 260px);
     }
 
+    .hero-slogan {
+      margin: 0 0 12px;
+      font-size: clamp(13px, 1.6vw, 15px);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #22d3ee;
+      text-shadow: 0 0 24px rgba(34, 211, 238, 0.25);
+    }
+
     .hero-try-btn {
       flex-shrink: 0;
       align-self: flex-start;
       white-space: nowrap;
+      position: relative;
+      z-index: 2;
     }
 
     .hero h1 {
@@ -201,10 +327,31 @@
     }
 
     .actions {
-      margin-top: 22px;
+      margin-top: auto;
+      padding-top: 22px;
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .scroll-cue {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.7);
+      animation: cue-bounce 2.2s ease-in-out infinite;
+    }
+
+    @keyframes cue-bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+      50% { transform: translateX(-50%) translateY(6px); opacity: 1; }
     }
 
     .btn {
@@ -298,6 +445,123 @@
       color: #fff;
     }
 
+    .flow-section {
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+
+    .flow-section .flow-head {
+      margin-bottom: 14px;
+    }
+
+    .flow-section .flow-head h2 {
+      margin: 0 0 6px;
+      font-size: clamp(19px, 2.4vw, 24px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #e0e7ff;
+    }
+
+    .flow-section .flow-head p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .flow-rail {
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding: 4px 4px 14px;
+      margin: 0 -8px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(139, 92, 246, 0.45) transparent;
+    }
+
+    .flow-rail::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .flow-rail::-webkit-scrollbar-thumb {
+      background: rgba(139, 92, 246, 0.4);
+      border-radius: 999px;
+    }
+
+    .flow-track {
+      display: flex;
+      gap: 14px;
+      padding: 4px 8px 8px;
+      min-height: 1px;
+    }
+
+    @media (min-width: 960px) {
+      .flow-track {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .flow-card {
+        scroll-snap-align: unset;
+      }
+    }
+
+    .flow-card {
+      flex: 0 0 min(260px, 82vw);
+      scroll-snap-align: start;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(155deg, rgba(255, 255, 255, 0.07) 0%, rgba(0, 0, 0, 0.2) 100%);
+      padding: 18px 16px 16px;
+      box-shadow:
+        0 16px 36px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .flow-card:hover {
+      border-color: rgba(167, 139, 250, 0.35);
+      transform: translateY(-3px);
+    }
+
+    .flow-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 12px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .flow-step-bilingual {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: rgba(167, 139, 250, 0.75);
+      margin-bottom: 6px;
+    }
+
+    .flow-line-en {
+      margin: 0 0 4px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #f1f5f9;
+      line-height: 1.45;
+    }
+
+    .flow-line-zh {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
     .grid {
       position: relative;
       z-index: 1;
@@ -344,6 +608,20 @@
       line-height: 1.6;
     }
 
+    .pull-quote {
+      margin: 14px 0 0;
+      padding: 14px 16px;
+      border-left: 3px solid transparent;
+      border-image: linear-gradient(180deg, #a78bfa, #22d3ee) 1;
+      background: rgba(0, 0, 0, 0.28);
+      border-radius: 0 12px 12px 0;
+      font-size: 15px;
+      font-weight: 700;
+      font-style: italic;
+      color: #e2e8f0;
+      line-height: 1.55;
+    }
+
     .card ul {
       margin: 0;
       padding-left: 18px;
@@ -354,37 +632,25 @@
 
     .card li { margin-bottom: 6px; }
 
-    .timeline {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .step {
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      background: rgba(0, 0, 0, 0.25);
-      padding: 10px 11px;
-      font-size: 13px;
-      color: #cbd5e1;
-    }
-
-    .step b {
-      color: #a78bfa;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      display: block;
-      margin-bottom: 4px;
-      font-weight: 800;
-    }
-
     footer {
       margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
       color: #64748b;
       font-size: 13px;
       font-weight: 500;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      justify-content: space-between;
+    }
+
+    .footer-motif {
+      width: 48px;
+      height: 48px;
+      color: rgba(167, 139, 250, 0.35);
+      flex-shrink: 0;
     }
 
     [data-lang="zh"] .en-only { display: none; }
@@ -392,18 +658,37 @@
 
     @media (max-width: 900px) {
       .grid { grid-template-columns: 1fr; }
-      .timeline { grid-template-columns: 1fr 1fr; }
     }
 
     @media (max-width: 640px) {
-      .hero-top { flex-direction: column; }
+      .hero { min-height: unset; }
+      .hero-top {
+        flex-direction: column;
+        padding-right: 0;
+      }
       .hero-try-btn { align-self: flex-end; }
+      .hero-motif-wrap {
+        top: 8px;
+        right: 8px;
+        width: 100px;
+        height: 100px;
+      }
+      .scroll-cue { display: none; }
     }
   </style>
 </head>
 <body data-lang="zh">
+  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
+  <nav class="section-nav" aria-label="Section navigation">
+    <a href="#sec-intro" aria-current="true" data-section="sec-intro"><span>Intro</span></a>
+    <a href="#sec-flow" data-section="sec-flow"><span>Flow</span></a>
+    <a href="#sec-story" data-section="sec-story"><span>Story</span></a>
+    <a href="#sec-footer" data-section="sec-footer"><span>Footer</span></a>
+  </nav>
+
   <main class="wrap">
-    <div class="top">
+    <div class="top reveal-section is-visible" id="top-bar">
       <span class="badge en-only">Visual Communication Design</span>
       <span class="badge zh-only">視覺傳達設計課程展示</span>
       <nav class="lang" aria-label="Language switch">
@@ -412,10 +697,29 @@
       </nav>
     </div>
 
-    <section class="hero">
+    <section class="hero reveal-section is-visible" id="sec-intro" aria-labelledby="hero-title">
+      <div class="hero-motif-wrap" aria-hidden="true">
+        <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="motifGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a78bfa" />
+              <stop offset="100%" stop-color="#22d3ee" />
+            </linearGradient>
+          </defs>
+          <g stroke="url(#motifGrad)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="motif-animate">
+            <rect x="12" y="12" width="52" height="52" rx="6" />
+            <rect x="76" y="12" width="72" height="52" rx="6" opacity="0.85" />
+            <rect x="12" y="76" width="72" height="72" rx="6" opacity="0.75" />
+            <rect x="96" y="96" width="52" height="52" rx="6" opacity="0.65" />
+            <path d="M64 38h8M100 38h8M38 64v8M38 100v8M124 100v12" opacity="0.5" />
+          </g>
+        </svg>
+      </div>
+
       <div class="hero-top">
         <div class="hero-intro">
-          <h1>Portfolio ReStyle AI</h1>
+          <p class="hero-slogan">Layout lab for portfolio stories</p>
+          <h1 id="hero-title">Portfolio ReStyle AI</h1>
           <p class="sub en-only">Human-AI layout collaboration for portfolio remix: palette, style keywords, canvas, narrative order, variant comparison, and export.</p>
           <p class="sub zh-only">以人機協作重新編排作品集：色系、風格關鍵詞、畫布、敘事順序、多版本比較與匯出。</p>
         </div>
@@ -454,9 +758,50 @@
           <span class="zh-only">查看完整 Markdown 說明</span>
         </a>
       </div>
+      <div class="scroll-cue en-only" aria-hidden="true">Scroll</div>
+      <div class="scroll-cue zh-only" aria-hidden="true">向下瀏覽</div>
     </section>
 
-    <section class="grid">
+    <section class="flow-section reveal-section" id="sec-flow" aria-labelledby="flow-heading">
+      <div class="flow-head">
+        <h2 id="flow-heading">
+          <span class="en-only">UX Flow</span>
+          <span class="zh-only">UX 流程</span>
+        </h2>
+        <p class="en-only">Four beats — swipe on mobile.</p>
+        <p class="zh-only">四個步驟 — 手機可橫向滑動瀏覽。</p>
+      </div>
+      <div class="flow-rail" tabindex="0" role="region" aria-label="UX flow steps">
+        <div class="flow-track">
+          <article class="flow-card">
+            <div class="flow-icon" aria-hidden="true">📥</div>
+            <div class="flow-step-bilingual">Flow 1 · 流程 1</div>
+            <p class="flow-line-en">Upload / import PDF or SVG.</p>
+            <p class="flow-line-zh">上傳或匯入 PDF、SVG。</p>
+          </article>
+          <article class="flow-card">
+            <div class="flow-icon" aria-hidden="true">🎛</div>
+            <div class="flow-step-bilingual">Flow 2 · 流程 2</div>
+            <p class="flow-line-en">Set style, palette, canvas, narrative.</p>
+            <p class="flow-line-zh">設定風格、色系、畫布與敘事。</p>
+          </article>
+          <article class="flow-card">
+            <div class="flow-icon" aria-hidden="true">🔀</div>
+            <div class="flow-step-bilingual">Flow 3 · 流程 3</div>
+            <p class="flow-line-en">Compare three variants per page.</p>
+            <p class="flow-line-zh">每頁並列比較三種版本。</p>
+          </article>
+          <article class="flow-card">
+            <div class="flow-icon" aria-hidden="true">📤</div>
+            <div class="flow-step-bilingual">Flow 4 · 流程 4</div>
+            <p class="flow-line-en">Export merged PDF and per-page SVG.</p>
+            <p class="flow-line-zh">匯出合併 PDF 與每頁 SVG。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid reveal-section" id="sec-story" aria-label="Project narrative">
       <article class="card">
         <h2 class="en-only">Problem</h2>
         <h2 class="zh-only">問題定義</h2>
@@ -469,23 +814,8 @@
         <h2 class="zh-only">核心概念 / 為何做這個工具</h2>
         <p class="en-only">Re-interpret existing SVG/PDF with clear intent. System generates variants; designer chooses, then exports SVG/PDF deliverables.</p>
         <p class="zh-only">以明確意圖重詮釋既有 SVG/PDF：系統生成變體、設計師做選擇，最後匯出 SVG/PDF 交付物。</p>
-      </article>
-
-      <article class="card">
-        <h2 class="en-only">UX Flow (from deck)</h2>
-        <h2 class="zh-only">UX 流程（對齊簡報）</h2>
-        <div class="timeline en-only">
-          <div class="step"><b>Flow 1</b>Upload / import PDF-SVG</div>
-          <div class="step"><b>Flow 2</b>Options: style, palette, canvas, narrative</div>
-          <div class="step"><b>Flow 3</b>Pages: compare three variants</div>
-          <div class="step"><b>Flow 4</b>Export: merged PDF + per-page SVG</div>
-        </div>
-        <div class="timeline zh-only">
-          <div class="step"><b>流程 1</b>上傳 / 匯入 PDF、SVG</div>
-          <div class="step"><b>流程 2</b>選項：風格、色系、畫布、敘事</div>
-          <div class="step"><b>流程 3</b>頁面：比較三種版本</div>
-          <div class="step"><b>流程 4</b>匯出：合併 PDF + 每頁 SVG</div>
-        </div>
+        <blockquote class="pull-quote en-only">We automate packaging and variation, not authorship.</blockquote>
+        <blockquote class="pull-quote zh-only">我們自動化的是包裝與變體，而非作者性。</blockquote>
       </article>
 
       <article class="card">
@@ -554,9 +884,15 @@
       </article>
     </section>
 
-    <footer>
+    <footer class="reveal-section" id="sec-footer">
       <span class="en-only">Portfolio ReStyle AI - Design presentation site aligned with product visual style</span>
       <span class="zh-only">Portfolio ReStyle AI - 與產品視覺風格一致的設計展示網站</span>
+      <svg class="footer-motif" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="6" y="6" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1" />
+        <rect x="26" y="6" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1" opacity="0.7" />
+        <rect x="6" y="26" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55" />
+        <rect x="26" y="26" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1" opacity="0.4" />
+      </svg>
     </footer>
   </main>
 
@@ -565,6 +901,11 @@
     const btnZh = document.getElementById("btn-zh");
     const downloadMenu = document.getElementById("download-menu");
     const downloadToggle = document.getElementById("download-toggle");
+    const scrollProgress = document.getElementById("scroll-progress");
+    const sectionLinks = document.querySelectorAll(".section-nav a");
+    const sections = ["sec-intro", "sec-flow", "sec-story", "sec-footer"].map((id) =>
+      document.getElementById(id)
+    );
 
     function setLang(lang) {
       document.body.dataset.lang = lang;
@@ -572,6 +913,12 @@
       btnEn.setAttribute("aria-pressed", String(lang === "en"));
       btnZh.setAttribute("aria-pressed", String(lang === "zh"));
       localStorage.setItem("prsa-pages-lang", lang);
+      const hash = lang === "zh" ? "#zh" : "#en";
+      if (history.replaceState) {
+        history.replaceState(null, "", hash);
+      } else {
+        location.hash = hash;
+      }
     }
 
     btnEn.addEventListener("click", () => setLang("en"));
@@ -585,8 +932,70 @@
       }
     });
 
+    const hashLang = (location.hash || "").toLowerCase();
     const saved = localStorage.getItem("prsa-pages-lang");
-    setLang(saved === "zh" ? "zh" : "en");
+    if (hashLang === "#zh") {
+      setLang("zh");
+    } else if (hashLang === "#en") {
+      setLang("en");
+    } else {
+      setLang(saved === "zh" ? "zh" : "en");
+    }
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function updateScrollProgress() {
+      const doc = document.documentElement;
+      const scrollTop = doc.scrollTop || document.body.scrollTop;
+      const height = doc.scrollHeight - doc.clientHeight;
+      const pct = height > 0 ? (scrollTop / height) * 100 : 0;
+      scrollProgress.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+    }
+
+    function updateSectionNav() {
+      const mid = window.innerHeight * 0.35;
+      let current = "sec-intro";
+      for (const el of sections) {
+        if (!el) continue;
+        const r = el.getBoundingClientRect();
+        if (r.top <= mid && r.bottom >= mid) {
+          current = el.id;
+          break;
+        }
+      }
+      if (sections.length && sections[sections.length - 1]) {
+        const last = sections[sections.length - 1];
+        const lr = last.getBoundingClientRect();
+        if (lr.top < mid) current = last.id;
+      }
+      sectionLinks.forEach((a) => {
+        a.setAttribute("aria-current", a.dataset.section === current ? "true" : "false");
+      });
+    }
+
+    if (!reduceMotion) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+            }
+          });
+        },
+        { root: null, rootMargin: "0px 0px -8% 0px", threshold: 0.08 }
+      );
+      document.querySelectorAll(".reveal-section").forEach((el) => observer.observe(el));
+    } else {
+      document.querySelectorAll(".reveal-section").forEach((el) => el.classList.add("is-visible"));
+    }
+
+    window.addEventListener("scroll", () => {
+      updateScrollProgress();
+      updateSectionNav();
+    });
+    window.addEventListener("resize", updateSectionNav);
+    updateScrollProgress();
+    updateSectionNav();
   </script>
 </body>
 </html>
