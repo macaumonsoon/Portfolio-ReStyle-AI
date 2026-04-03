@@ -204,13 +204,14 @@
 
     .hero-motif-wrap {
       position: absolute;
-      top: clamp(12px, 3vw, 28px);
-      right: clamp(12px, 3vw, 24px);
-      width: min(160px, 38vw);
-      height: min(160px, 38vw);
+      top: auto;
+      bottom: clamp(14px, 3vw, 26px);
+      right: clamp(12px, 3vw, 22px);
+      width: min(150px, 36vw);
+      height: min(150px, 36vw);
       pointer-events: none;
       color: #a78bfa;
-      opacity: 0.9;
+      opacity: 0.85;
       z-index: 1;
     }
 
@@ -224,15 +225,13 @@
     }
 
     .hero-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 16px 20px;
       margin-bottom: 4px;
       position: relative;
       z-index: 2;
-      padding-right: min(140px, 32vw);
     }
 
     .hero-intro {
@@ -253,8 +252,8 @@
     }
 
     .hero-try-btn {
-      flex-shrink: 0;
-      align-self: flex-start;
+      justify-self: end;
+      align-self: start;
       white-space: nowrap;
       position: relative;
       z-index: 2;
@@ -738,15 +737,17 @@
 
     @media (max-width: 640px) {
       .hero-top {
-        flex-direction: column;
-        padding-right: 0;
+        grid-template-columns: 1fr;
       }
-      .hero-try-btn { align-self: flex-end; }
+      .hero-try-btn {
+        justify-self: end;
+      }
       .hero-motif-wrap {
-        top: 8px;
+        top: auto;
+        bottom: 10px;
         right: 8px;
-        width: 100px;
-        height: 100px;
+        width: 96px;
+        height: 96px;
       }
       .tech-bar-inner {
         flex-direction: column;
