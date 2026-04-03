@@ -557,18 +557,45 @@
       line-height: 1.6;
     }
 
-    .pull-quote {
+    .card-callout {
+      position: relative;
       margin: 14px 0 0;
-      padding: 14px 16px;
-      border-left: 3px solid transparent;
-      border-image: linear-gradient(180deg, #a78bfa, #22d3ee) 1;
-      background: rgba(0, 0, 0, 0.28);
-      border-radius: 0 12px 12px 0;
-      font-size: 15px;
-      font-weight: 700;
-      font-style: italic;
-      color: #e2e8f0;
+      padding: 14px 14px 12px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 14px;
+      font-weight: 600;
       line-height: 1.55;
+      color: #cbd5e1;
+      letter-spacing: 0.01em;
+    }
+
+    .card-callout::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 14px;
+      right: 14px;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        rgba(167, 139, 250, 0.55),
+        rgba(99, 102, 241, 0.35) 45%,
+        rgba(34, 211, 238, 0.35) 100%
+      );
+      border-radius: 2px;
+    }
+
+    .card-callout-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #a78bfa;
+      margin-bottom: 8px;
+      opacity: 0.95;
     }
 
     .card ul {
@@ -874,6 +901,12 @@
         <h2 class="zh-only">問題定義</h2>
         <p class="en-only">Portfolios are narrative and craft, but deck restructuring (order, grid, tone) is repetitive and steals time from concept work.</p>
         <p class="zh-only">作品集是敘事與工藝，但頁序、網格、色調等重整工作高度重複，壓縮了概念發想時間。</p>
+        <div class="card-callout">
+          <span class="card-callout-label en-only">Takeaway</span>
+          <span class="card-callout-label zh-only">要點</span>
+          <span class="en-only">The bottleneck is packaging and layout iteration — not the creative idea itself.</span>
+          <span class="zh-only">瓶頸在版面與包裝的反覆調整，而非創意本身。</span>
+        </div>
       </article>
 
       <article class="card">
@@ -881,8 +914,12 @@
         <h2 class="zh-only">核心概念 / 為何做這個工具</h2>
         <p class="en-only">Re-interpret existing SVG/PDF with clear intent. System generates variants; designer chooses, then exports SVG/PDF deliverables.</p>
         <p class="zh-only">以明確意圖重詮釋既有 SVG/PDF：系統生成變體、設計師做選擇，最後匯出 SVG/PDF 交付物。</p>
-        <blockquote class="pull-quote en-only">We automate packaging and variation, not authorship.</blockquote>
-        <blockquote class="pull-quote zh-only">我們自動化的是包裝與變體，而非作者性。</blockquote>
+        <div class="card-callout">
+          <span class="card-callout-label en-only">Principle</span>
+          <span class="card-callout-label zh-only">原則</span>
+          <span class="en-only">We automate packaging and variation, not authorship.</span>
+          <span class="zh-only">我們自動化的是包裝與變體，而非作者性。</span>
+        </div>
       </article>
 
       <article class="card">
