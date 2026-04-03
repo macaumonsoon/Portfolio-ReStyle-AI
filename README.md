@@ -43,8 +43,8 @@ Markdown source for further edits: `presentation/PRESENTATION_SOURCE.md`.
 
 Walkthrough of the app in use and how it maps to the slide deck (purpose, visual communication context, design thinking, UI/UX).
 
-- **Watch on YouTube:** [youtu.be/w9JgCaEN3wc](https://youtu.be/w9JgCaEN3wc)
-- **Full URL:** https://www.youtube.com/watch?v=w9JgCaEN3wc
+- **Watch on YouTube:** [youtu.be/FjQWlJaZMNA](https://youtu.be/FjQWlJaZMNA)
+- **Full URL:** https://www.youtube.com/watch?v=FjQWlJaZMNA
 
 ---
 
