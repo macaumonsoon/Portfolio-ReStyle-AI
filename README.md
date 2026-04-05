@@ -18,6 +18,8 @@ After you enable Pages (**Settings → Pages → Build and deployment → Source
 
 The Pages site summarizes the design narrative, UI/UX decisions, and links back to this repository.
 
+**Try app link on Pages:** Edit `docs/assets/prsa-config.js` and set `PRSA_PRODUCTION_APP_URL` to your Vercel **Production** URL after you deploy the `web/` directory (Root Directory = `web`). Leave it empty until then — the “online” button will open Vercel’s GitHub import flow instead of a non-existent `*.vercel.app` URL.
+
 ---
 
 ## Slide deck (PowerPoint — open directly)

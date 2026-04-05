@@ -222,23 +222,29 @@
           <span class="zh-only">瀏覽器線上試用（Vercel）</span>
         </h2>
         <p class="lede en-only">
-          No install needed once the app is deployed. Connect this repo’s <code>web/</code> folder to <strong>Vercel</strong>, copy your production URL into <code>docs/assets/prsa-config.js</code>, push — the presentation site will pick it up automatically.
+          After deploy, no install is needed in the browser. Import this GitHub repo on <strong>Vercel</strong>, set <strong>Root Directory</strong> to <code>web</code>, deploy once, then paste the Production URL into <code>docs/assets/prsa-config.js</code> (<code>PRSA_PRODUCTION_APP_URL</code>) and push.
         </p>
         <p class="lede zh-only">
-          部署完成後無需安裝 Node。將 <code>web/</code> 接到 <strong>Vercel</strong> 後，把正式網址寫入 <code>docs/assets/prsa-config.js</code> 並推送，展示站會自動套用。
+          部署後訪客無需安裝 Node。請在 <strong>Vercel</strong> 導入本 GitHub 倉庫，<strong>Root Directory</strong> 設為 <code>web</code>，部署完成後把 Production 網址寫入 <code>docs/assets/prsa-config.js</code> 的 <code>PRSA_PRODUCTION_APP_URL</code> 並推送。
         </p>
-        <p class="url-placeholder" data-prsa-live-url-text title="Set in docs/assets/prsa-config.js">https://portfolio-restyle-ai.vercel.app</p>
+        <p class="url-placeholder" data-prsa-live-url-text title="docs/assets/prsa-config.js"></p>
         <div class="actions">
           <div class="row">
-            <a class="btn primary" data-prsa-live-app href="https://portfolio-restyle-ai.vercel.app" target="_blank" rel="noopener noreferrer">
-              <span class="en-only">Open live app →</span>
-              <span class="zh-only">開啟線上應用 →</span>
+            <a class="btn primary" data-prsa-live-app href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmacaumonsoon%2FPortfolio-ReStyle-AI" target="_blank" rel="noopener noreferrer">
+              <span class="en-only" data-prsa-live-app-label-deploy>Deploy on Vercel (root: web) →</span>
+              <span class="zh-only" data-prsa-live-app-label-deploy>在 Vercel 部署（根目錄選 web）→</span>
+              <span class="en-only" data-prsa-live-app-label-live style="display: none">Open live app →</span>
+              <span class="zh-only" data-prsa-live-app-label-live style="display: none">開啟線上應用 →</span>
+            </a>
+            <a class="btn secondary" href="http://127.0.0.1:3000/" target="_blank" rel="noopener noreferrer">
+              <span class="en-only">Open local app (after npm run dev) →</span>
+              <span class="zh-only">開啟本機應用（先 npm run dev）→</span>
             </a>
           </div>
           <div class="row">
-            <a class="btn secondary" href="https://vercel.com/new" target="_blank" rel="noopener noreferrer">
-              <span class="en-only">Deploy with Vercel →</span>
-              <span class="zh-only">使用 Vercel 部署 →</span>
+            <a class="btn secondary" href="https://vercel.com/docs/deployments/configure-a-build#root-directory" target="_blank" rel="noopener noreferrer">
+              <span class="en-only">How to set Root Directory →</span>
+              <span class="zh-only">如何設定根目錄 web →</span>
             </a>
             <a class="btn secondary" href="https://youtu.be/FjQWlJaZMNA" target="_blank" rel="noopener noreferrer">
               <span class="en-only">Watch demo video →</span>
@@ -247,10 +253,10 @@
           </div>
         </div>
         <p class="note en-only">
-          Until you deploy, this link may show a Vercel 404 — expected. Edit <strong><code>docs/assets/prsa-config.js</code></strong> and set <code>PRSA_PRODUCTION_APP_URL</code> to your dashboard URL, then push.
+          While <code>PRSA_PRODUCTION_APP_URL</code> is empty, the purple button opens Vercel import (not a 404). After your first successful deploy, paste the Production URL into <strong><code>docs/assets/prsa-config.js</code></strong> and push; the button label switches to “Open live app”.
         </p>
         <p class="note zh-only">
-          尚未部署時可能出現 Vercel 404，屬正常。請編輯 <strong><code>docs/assets/prsa-config.js</code></strong> 中的 <code>PRSA_PRODUCTION_APP_URL</code> 為控制台顯示的網址後再推送。
+          <code>PRSA_PRODUCTION_APP_URL</code> 留空時，紫色按鈕會打開 Vercel 導入流程（不會再進入無效部署 404）。首次部署成功後，把 Production 網址貼入 <strong><code>docs/assets/prsa-config.js</code></strong> 並推送，按鈕會變為「開啟線上應用」。
         </p>
       </section>
 
