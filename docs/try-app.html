@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#12131e" />
+  <title>Portfolio ReStyle AI — Run the app</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep: #10111a;
+      --bg-mid: #181a26;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --line: rgba(255, 255, 255, 0.08);
+      --shadow: 0 24px 48px rgba(0, 0, 0, 0.38);
+    }
+    * { box-sizing: border-box; }
+    html { color-scheme: dark; }
+    body {
+      margin: 0;
+      font-family: "Plus Jakarta Sans", "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background-color: var(--bg-deep);
+      background-image:
+        radial-gradient(ellipse 100% 70% at 50% -20%, rgba(99, 102, 241, 0.24), transparent 52%),
+        linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 50%, #151622 100%);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 28px 16px 52px;
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .back {
+      color: #c4b5fd;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      border-radius: 999px;
+      padding: 8px 16px;
+      background: rgba(139, 92, 246, 0.12);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .back:hover {
+      background: rgba(139, 92, 246, 0.2);
+      transform: translateY(-1px);
+    }
+    .lang {
+      display: inline-flex;
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .lang button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .lang button[aria-pressed="true"] {
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      color: #fff;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(20, 21, 32, 0.72);
+      backdrop-filter: blur(12px);
+      padding: clamp(22px, 4vw, 32px);
+      box-shadow: var(--shadow);
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(24px, 4vw, 32px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff 0%, #c4b5fd 90%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .lede {
+      margin: 0 0 20px;
+      color: #b8c5d6;
+      font-size: 16px;
+    }
+    pre {
+      margin: 0 0 20px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn {
+      text-decoration: none;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn.primary {
+      background: linear-gradient(135deg, #7c3aed 0%, #6366f1 50%, #4f46e5 100%);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+    }
+    .btn.secondary {
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .note {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--muted);
+    }
+    body[data-lang="zh"] .en-only { display: none !important; }
+    body[data-lang="en"] .zh-only { display: none !important; }
+  </style>
+</head>
+<body data-lang="zh">
+  <main class="wrap">
+    <div class="top">
+      <a class="back" href="./index.html#zh" id="back-link">
+        <span class="en-only">← Back to presentation</span>
+        <span class="zh-only">← 返回展示頁</span>
+      </a>
+      <nav class="lang" aria-label="Language switch">
+        <button type="button" id="btn-en" aria-pressed="false">English</button>
+        <button type="button" id="btn-zh" aria-pressed="true">中文</button>
+      </nav>
+    </div>
+
+    <article class="card">
+      <h1>
+        <span class="en-only">Run the Portfolio ReStyle AI app</span>
+        <span class="zh-only">運行 Portfolio ReStyle AI 工具</span>
+      </h1>
+      <p class="lede en-only">
+        This GitHub Pages site is static. The full interactive tool is a <strong>Next.js</strong> app that runs on your computer (Node.js 20+). Follow the steps below, then open the local URL.
+      </p>
+      <p class="lede zh-only">
+        GitHub Pages 上的是靜態介紹站，完整的互動工具是需在您電腦上運行的 <strong>Next.js</strong> 應用（需 Node.js 20+）。請依下列步驟操作，再在瀏覽器開啟本機網址。
+      </p>
+
+      <pre><code>git clone https://github.com/macaumonsoon/Portfolio-ReStyle-AI.git
+cd Portfolio-ReStyle-AI/web
+npm install
+npm run dev</code></pre>
+
+      <div class="actions">
+        <div class="row">
+          <a class="btn primary" href="http://127.0.0.1:3000/" target="_blank" rel="noopener noreferrer">
+            <span class="en-only">Open app at http://127.0.0.1:3000 →</span>
+            <span class="zh-only">開啟本機應用 http://127.0.0.1:3000 →</span>
+          </a>
+        </div>
+        <div class="row">
+          <a class="btn secondary" href="https://github.com/macaumonsoon/Portfolio-ReStyle-AI#how-to-run-the-app" target="_blank" rel="noopener noreferrer">
+            <span class="en-only">Full setup on GitHub README →</span>
+            <span class="zh-only">GitHub README 完整說明 →</span>
+          </a>
+          <a class="btn secondary" href="https://youtu.be/FjQWlJaZMNA" target="_blank" rel="noopener noreferrer">
+            <span class="en-only">Watch demo video →</span>
+            <span class="zh-only">觀看演示影片 →</span>
+          </a>
+        </div>
+      </div>
+
+      <p class="note en-only">
+        Use the purple button only <strong>after</strong> <code>npm run dev</code> is running. If the page does not load, check the terminal for errors or a different port.
+      </p>
+      <p class="note zh-only">
+        請在終端機已成功執行 <code>npm run dev</code> <strong>之後</strong>再點紫色按鈕。若無法開啟，請查看終端機是否報錯或使用其他埠號。
+      </p>
+    </article>
+  </main>
+
+  <script>
+    const btnEn = document.getElementById("btn-en");
+    const btnZh = document.getElementById("btn-zh");
+    const backLink = document.getElementById("back-link");
+
+    function setLang(lang) {
+      document.body.dataset.lang = lang;
+      document.documentElement.lang = lang === "zh" ? "zh-Hant" : "en";
+      btnEn.setAttribute("aria-pressed", String(lang === "en"));
+      btnZh.setAttribute("aria-pressed", String(lang === "zh"));
+      localStorage.setItem("prsa-pages-lang", lang);
+      backLink.href = lang === "zh" ? "./index.html#zh" : "./index.html#en";
+      const hash = lang === "zh" ? "#zh" : "#en";
+      if (history.replaceState) {
+        history.replaceState(null, "", hash);
+      } else {
+        location.hash = hash;
+      }
+    }
+
+    btnEn.addEventListener("click", () => setLang("en"));
+    btnZh.addEventListener("click", () => setLang("zh"));
+
+    const hashLang = (location.hash || "").toLowerCase();
+    const saved = localStorage.getItem("prsa-pages-lang");
+    if (hashLang === "#zh") {
+      setLang("zh");
+    } else if (hashLang === "#en") {
+      setLang("en");
+    } else {
+      setLang(saved === "en" ? "en" : "zh");
+    }
+  </script>
+</body>
+</html>
