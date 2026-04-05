@@ -18,7 +18,23 @@ After you enable Pages (**Settings → Pages → Build and deployment → Source
 
 The Pages site summarizes the design narrative, UI/UX decisions, and links back to this repository.
 
-**Try app link on Pages:** Edit `docs/assets/prsa-config.js` and set `PRSA_PRODUCTION_APP_URL` to your Vercel **Production** URL after you deploy the `web/` directory (Root Directory = `web`). Leave it empty until then — the “online” button will open Vercel’s GitHub import flow instead of a non-existent `*.vercel.app` URL.
+**Try app link on Pages:** After Vercel shows a successful Production deployment, paste that URL into `docs/assets/prsa-config.js` (`PRSA_PRODUCTION_APP_URL`). Until then, leave it empty. See **Deploy app to Vercel** below.
+
+### Deploy app to Vercel（部署应用并获取 Production URL）
+
+`PRSA_PRODUCTION_APP_URL` **不是在 Vercel 网站里编辑的**：你要在 **Vercel 上先部署成功**，**复制**控制台显示的网址，再到 **本机 Cursor** 里改 `docs/assets/prsa-config.js`，最后 **commit + push** 到 GitHub。
+
+1. **在 Vercel 打开项目** `portfolio-restyle-ai` → **Settings** → **General**。
+2. 找到 **Root Directory**，点击 **Edit**，填 **`web`**，**Save**。（Next.js 应用在仓库的 `web/` 子目录；不填会导致构建失败或 “No Production Deployment”。）
+3. 打开 **Deployments**，对最新记录点 **⋯** → **Redeploy**（或推送一个新 commit 触发部署）。
+4. 等状态变为 **Ready**。若失败，点进该次部署查看 **Build Logs** 里的报错。
+5. **部署成功后**，在 **Overview** 或 **Settings → Domains** 可以看到形如 **`https://portfolio-restyle-ai-xxx.vercel.app`** 的地址（以你控制台为准），这就是 **Production URL**。
+6. 在 Cursor 中打开 **`docs/assets/prsa-config.js`**，把  
+   `var PRSA_PRODUCTION_APP_URL = "";`  
+   改成（示例）：  
+   `var PRSA_PRODUCTION_APP_URL = "https://你的子域名.vercel.app";`  
+   保存后执行 `git add`、`git commit`、`git push`。
+7. 等 GitHub Pages 更新后，展示站上的「線上應用」按钮会指向你的真实线上环境。
 
 ---
 
