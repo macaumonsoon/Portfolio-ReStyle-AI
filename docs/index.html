@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#12131e" />
   <title>Portfolio ReStyle AI - Presentation Site</title>
+  <!-- PLACEHOLDER Vercel URL — replace after deploy (search docs for https://portfolio-restyle-ai.vercel.app) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
@@ -251,12 +252,34 @@
         0 1px 14px rgba(5, 5, 12, 0.85);
     }
 
-    .hero-try-btn {
+    .hero-try-stack {
       justify-self: end;
       align-self: start;
-      white-space: nowrap;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
       position: relative;
       z-index: 2;
+    }
+
+    .hero-try-btn {
+      white-space: nowrap;
+    }
+
+    .hero-try-sub {
+      font-size: 12px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+      padding-bottom: 1px;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .hero-try-sub:hover {
+      color: #c4b5fd;
+      border-color: rgba(196, 181, 253, 0.55);
     }
 
     .hero h1 {
@@ -805,10 +828,16 @@
           <p class="sub en-only">Human-AI layout collaboration for portfolio remix: palette, style keywords, canvas, narrative order, variant comparison, and export.</p>
           <p class="sub zh-only">以人機協作重新編排作品集：色系、風格關鍵詞、畫布、敘事順序、多版本比較與匯出。</p>
         </div>
-        <a class="btn primary hero-try-btn" href="./try-app.html" rel="noopener noreferrer">
-          <span class="en-only">Try the Portfolio ReStyle AI tool →</span>
-          <span class="zh-only">体验 Portfolio ReStyle AI 工具 →</span>
-        </a>
+        <div class="hero-try-stack">
+          <a class="btn primary hero-try-btn" href="https://portfolio-restyle-ai.vercel.app" target="_blank" rel="noopener noreferrer">
+            <span class="en-only">Try online — no install (Vercel) →</span>
+            <span class="zh-only">線上試用 — 免安裝（Vercel）→</span>
+          </a>
+          <a class="hero-try-sub" href="./try-app.html#local-setup">
+            <span class="en-only">Run locally with Node →</span>
+            <span class="zh-only">本機以 Node 運行 →</span>
+          </a>
+        </div>
       </div>
       <div class="actions">
         <a class="btn primary" href="./pdf-viewer.html" target="_blank" rel="noreferrer">

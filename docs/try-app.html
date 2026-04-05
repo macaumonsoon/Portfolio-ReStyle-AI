@@ -4,7 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#12131e" />
-  <title>Portfolio ReStyle AI — Run the app</title>
+  <title>Portfolio ReStyle AI — Try online or run locally</title>
+  <!--
+    PLACEHOLDER — Vercel production URL (replace after you deploy the `web/` folder):
+    https://portfolio-restyle-ai.vercel.app
+    Search the docs folder for that exact string and replace with your real URL (e.g. https://your-app.vercel.app).
+  -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
@@ -155,6 +160,43 @@
       font-size: 14px;
       color: var(--muted);
     }
+    h2.section-title {
+      margin: 0 0 10px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #5eead4;
+    }
+    .url-placeholder {
+      margin: 0 0 16px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      word-break: break-all;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px dashed rgba(167, 139, 250, 0.45);
+      color: #ddd6fe;
+      font-family: ui-monospace, monospace;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 28px 0 22px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
     body[data-lang="zh"] .en-only { display: none !important; }
     body[data-lang="en"] .zh-only { display: none !important; }
   </style>
@@ -174,46 +216,92 @@
 
     <article class="card">
       <h1>
-        <span class="en-only">Run the Portfolio ReStyle AI app</span>
-        <span class="zh-only">運行 Portfolio ReStyle AI 工具</span>
+        <span class="en-only">Try Portfolio ReStyle AI</span>
+        <span class="zh-only">試用 Portfolio ReStyle AI</span>
       </h1>
-      <p class="lede en-only">
-        This GitHub Pages site is static. The full interactive tool is a <strong>Next.js</strong> app that runs on your computer (Node.js 20+). Follow the steps below, then open the local URL.
-      </p>
-      <p class="lede zh-only">
-        GitHub Pages 上的是靜態介紹站，完整的互動工具是需在您電腦上運行的 <strong>Next.js</strong> 應用（需 Node.js 20+）。請依下列步驟操作，再在瀏覽器開啟本機網址。
-      </p>
 
-      <pre><code>git clone https://github.com/macaumonsoon/Portfolio-ReStyle-AI.git
+      <section id="online-demo" aria-labelledby="online-heading">
+        <h2 class="section-title" id="online-heading">
+          <span class="en-only">In your browser (Vercel)</span>
+          <span class="zh-only">瀏覽器線上試用（Vercel）</span>
+        </h2>
+        <p class="lede en-only">
+          No install needed once the app is deployed. After you connect this repo’s <code>web/</code> folder to <strong>Vercel</strong> and get a production URL, replace the placeholder below in <code>docs/index.html</code> and <code>docs/try-app.html</code>, then publish again.
+        </p>
+        <p class="lede zh-only">
+          部署完成後無需安裝 Node 即可體驗。將本倉庫的 <code>web/</code> 目錄連到 <strong>Vercel</strong> 並取得正式網址後，請把 <code>docs/index.html</code> 與 <code>docs/try-app.html</code> 中的占位網址改成你的網址，再推送更新。
+        </p>
+        <p class="url-placeholder" title="Replace after deploy">https://portfolio-restyle-ai.vercel.app</p>
+        <div class="actions">
+          <div class="row">
+            <a class="btn primary" href="https://portfolio-restyle-ai.vercel.app" target="_blank" rel="noopener noreferrer">
+              <span class="en-only">Open live app (placeholder URL) →</span>
+              <span class="zh-only">開啟線上應用（占位網址）→</span>
+            </a>
+          </div>
+          <div class="row">
+            <a class="btn secondary" href="https://vercel.com/new" target="_blank" rel="noopener noreferrer">
+              <span class="en-only">Deploy with Vercel →</span>
+              <span class="zh-only">使用 Vercel 部署 →</span>
+            </a>
+            <a class="btn secondary" href="https://youtu.be/FjQWlJaZMNA" target="_blank" rel="noopener noreferrer">
+              <span class="en-only">Watch demo video →</span>
+              <span class="zh-only">觀看演示影片 →</span>
+            </a>
+          </div>
+        </div>
+        <p class="note en-only">
+          Until you deploy, this button may show a Vercel 404 — that is expected. Replace <strong>https://portfolio-restyle-ai.vercel.app</strong> with your real deployment URL everywhere it appears under <code>docs/</code>.
+        </p>
+        <p class="note zh-only">
+          尚未部署時，按鈕可能開啟 Vercel 404，屬正常情況。請將 <strong>https://portfolio-restyle-ai.vercel.app</strong> 改為你的正式網址（在 <code>docs/</code> 內所有出現處一併替換）。
+        </p>
+      </section>
+
+      <div class="divider" role="presentation">
+        <span class="en-only">Or locally</span>
+        <span class="zh-only">或本機運行</span>
+      </div>
+
+      <section id="local-setup" aria-labelledby="local-heading">
+        <h2 class="section-title" id="local-heading">
+          <span class="en-only">On your computer (Node.js)</span>
+          <span class="zh-only">在您的電腦上（Node.js）</span>
+        </h2>
+        <p class="lede en-only">
+          The full interactive tool is a <strong>Next.js</strong> app. Requires <strong>Node.js 20+</strong>. Clone the repo, run the commands below, then open the local URL.
+        </p>
+        <p class="lede zh-only">
+          完整互動工具為 <strong>Next.js</strong> 應用，需 <strong>Node.js 20+</strong>。複製倉庫後依下列指令執行，再在瀏覽器開啟本機網址。
+        </p>
+
+        <pre><code>git clone https://github.com/macaumonsoon/Portfolio-ReStyle-AI.git
 cd Portfolio-ReStyle-AI/web
 npm install
 npm run dev</code></pre>
 
-      <div class="actions">
-        <div class="row">
-          <a class="btn primary" href="http://127.0.0.1:3000/" target="_blank" rel="noopener noreferrer">
-            <span class="en-only">Open app at http://127.0.0.1:3000 →</span>
-            <span class="zh-only">開啟本機應用 http://127.0.0.1:3000 →</span>
-          </a>
+        <div class="actions">
+          <div class="row">
+            <a class="btn primary" href="http://127.0.0.1:3000/" target="_blank" rel="noopener noreferrer">
+              <span class="en-only">Open local app at http://127.0.0.1:3000 →</span>
+              <span class="zh-only">開啟本機應用 http://127.0.0.1:3000 →</span>
+            </a>
+          </div>
+          <div class="row">
+            <a class="btn secondary" href="https://github.com/macaumonsoon/Portfolio-ReStyle-AI#how-to-run-the-app" target="_blank" rel="noopener noreferrer">
+              <span class="en-only">Full setup on GitHub README →</span>
+              <span class="zh-only">GitHub README 完整說明 →</span>
+            </a>
+          </div>
         </div>
-        <div class="row">
-          <a class="btn secondary" href="https://github.com/macaumonsoon/Portfolio-ReStyle-AI#how-to-run-the-app" target="_blank" rel="noopener noreferrer">
-            <span class="en-only">Full setup on GitHub README →</span>
-            <span class="zh-only">GitHub README 完整說明 →</span>
-          </a>
-          <a class="btn secondary" href="https://youtu.be/FjQWlJaZMNA" target="_blank" rel="noopener noreferrer">
-            <span class="en-only">Watch demo video →</span>
-            <span class="zh-only">觀看演示影片 →</span>
-          </a>
-        </div>
-      </div>
 
-      <p class="note en-only">
-        Use the purple button only <strong>after</strong> <code>npm run dev</code> is running. If the page does not load, check the terminal for errors or a different port.
-      </p>
-      <p class="note zh-only">
-        請在終端機已成功執行 <code>npm run dev</code> <strong>之後</strong>再點紫色按鈕。若無法開啟，請查看終端機是否報錯或使用其他埠號。
-      </p>
+        <p class="note en-only">
+          Use the local purple button only <strong>after</strong> <code>npm run dev</code> is running. If the page does not load, check the terminal for errors or a different port.
+        </p>
+        <p class="note zh-only">
+          請在終端機已成功執行 <code>npm run dev</code> <strong>之後</strong>再點本機紫色按鈕。若無法開啟，請查看終端機是否報錯或使用其他埠號。
+        </p>
+      </section>
     </article>
   </main>
 
