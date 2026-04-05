@@ -314,12 +314,7 @@ npm run dev</code></pre>
       btnZh.setAttribute("aria-pressed", String(lang === "zh"));
       localStorage.setItem("prsa-pages-lang", lang);
       backLink.href = lang === "zh" ? "./index.html#zh" : "./index.html#en";
-      const hash = lang === "zh" ? "#zh" : "#en";
-      if (history.replaceState) {
-        history.replaceState(null, "", hash);
-      } else {
-        location.hash = hash;
-      }
+      /* Keep #online-demo / #local-setup in the URL — do not replaceState to #zh/#en here. */
     }
 
     btnEn.addEventListener("click", () => setLang("en"));
@@ -331,6 +326,8 @@ npm run dev</code></pre>
       setLang("zh");
     } else if (hashLang === "#en") {
       setLang("en");
+    } else if (hashLang === "#online-demo" || hashLang === "#local-setup") {
+      setLang(saved === "en" ? "en" : "zh");
     } else {
       setLang(saved === "en" ? "en" : "zh");
     }

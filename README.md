@@ -4,6 +4,8 @@
 
 This repository includes the app source, presentation assets, and deployment notes for showcasing the project.
 
+**官方仓库 / Official repository:** [github.com/macaumonsoon/Portfolio-ReStyle-AI](https://github.com/macaumonsoon/Portfolio-ReStyle-AI)
+
 ---
 
 ## Live presentation site (GitHub Pages)
