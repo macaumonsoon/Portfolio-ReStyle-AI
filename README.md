@@ -36,6 +36,8 @@ The Pages site summarizes the design narrative, UI/UX decisions, and links back 
    保存后执行 `git add`、`git commit`、`git push`。
 7. 等 GitHub Pages 更新后，展示站上的「線上應用」按钮会指向你的真实线上环境。
 
+**若域名显示 Valid Configuration，但打开是 Vercel 白底 404：** 说明当前 **Production 背后没有成功的 Next 构建**（常见：Git 连的是空仓库 `restyle-ai-portfolio` 而不是本仓库、或 Root Directory 不是 `web`、或构建失败却仍指向旧部署）。请让 Vercel **连接 `Portfolio-ReStyle-AI` 仓库**、**Root Directory = `web`**、**Framework = Next.js**，并确保 **Deployments 里最新一条为 Ready** 后再访问。
+
 ---
 
 ## Slide deck (PowerPoint — open directly)

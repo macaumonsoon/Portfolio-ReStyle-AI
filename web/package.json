@@ -2,6 +2,9 @@
   "name": "portfolio-restyle-ai",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "next dev -H 127.0.0.1 -p 3000",
     "dev:clean": "npm run free:3000 && rm -rf .next && next dev -H 127.0.0.1 -p 3000",
@@ -9,8 +12,8 @@
     "dev:3010:clean": "npm run free:3010 && rm -rf .next && next dev -H 127.0.0.1 -p 3010",
     "dev:turbo": "next dev --turbopack -H 127.0.0.1 -p 3000",
     "build": "next build",
-    "start": "next start -H 127.0.0.1 -p 3000",
-    "start:3010": "next start -H 127.0.0.1 -p 3010",
+    "start": "next start",
+    "start:3010": "next start -p 3010",
     "free:3000": "bash scripts/free-port.sh 3000",
     "free:3010": "bash scripts/free-port.sh 3010",
     "lint": "next lint",
