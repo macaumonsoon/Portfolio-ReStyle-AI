@@ -9,7 +9,7 @@
  * 正式網址請貼 Vercel 控制台 Production；留空時紫色按鈕改為前往導入倉庫（Root Directory 選 web）。
  */
 (function () {
-  var PRSA_PRODUCTION_APP_URL = "";
+  var PRSA_PRODUCTION_APP_URL = "https://restyle-ai-portfolio.vercel.app";
 
   var PRSA_VERCEL_CLONE =
     "https://vercel.com/new/clone?repository-url=" +
